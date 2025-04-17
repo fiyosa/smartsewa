@@ -14,4 +14,16 @@ db.sequelize = sequelize;
 // Muat model User
 db.User = require('./user')(sequelize, Sequelize);
 
+// Muat model LaporanPembayaran
+db.LaporanPembayaran = require('./laporanPembayaran')(sequelize, Sequelize);
+
+//sinkronisasi model
+sequelize.sync({ alter: true })  // 
+  .then(() => {
+    console.log('Database synced!');
+  })
+  .catch((err) => {
+    console.error('Gagal sync database:', err);
+  });
+
 module.exports = db;

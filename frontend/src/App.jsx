@@ -4,8 +4,8 @@ import { ThemeProvider } from '@mui/material/styles';
 import theme from './theme';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import AdminHome from './pages/AdminHome';
-import UserHome from './pages/UserHome';
+import AdminHome from './pages/admin/AdminPages';
+import UserHome from './pages/user/UserPages';
 
 function App() {
   const [user, setUser] = useState(null);
