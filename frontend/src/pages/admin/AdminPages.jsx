@@ -1,7 +1,9 @@
+// src/pages/admin/AdminPages.jsx
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import axios from 'axios';
+
 import MobileContainer from '../../components/common/MobileContainer';
 import HomeContent from '../../components/admin/AdminHomeContent';
 import HistoryContent from '../../components/admin/AdminHistoryContent';
@@ -9,12 +11,17 @@ import ProfileContent from '../../components/admin/AdminProfileContent';
 import CommonGreeting from '../../components/common/CommonGreeting';
 import CommonBackground from '../../components/common/CommonBackground';
 import CommonBottomNavigation from '../../components/common/CommonBottomNavigation';
-import HistoryIcon from '@mui/icons-material/History';
+import AdminReportPayment from '../../components/admin/AdminReportPayment';
+import AdminReportDetail from '../../components/admin/AdminReportDetail';
+import AdminUserList from '../../components/admin/AdminUserList';
+import AdminUserDetail from '../../components/admin/AdminUserDetail';
+import MonitoringSensor from '../../components/admin/MonitoringSensor';
 
-// Assets
-import bgTop from '../../assets/Cloud.png'; // Updated path
-import bgBottom from '../../assets/Cloud3.png'; // Updated path
-import homeIcon from '../../assets/homeIcon.png'; // Updated path
+
+import HistoryIcon from '@mui/icons-material/History';
+import bgTop from '../../assets/Cloud.png';
+import bgBottom from '../../assets/Cloud3.png';
+import homeIcon from '../../assets/homeIcon.png';
 import homeIconSelected from '../../assets/homeIconSelected.png';
 import profileIcon from '../../assets/profileIcon.png';
 import profileIconSelected from '../../assets/profileIconSelected.png';
@@ -22,11 +29,14 @@ import profileIconSelected from '../../assets/profileIconSelected.png';
 function AdminPages({ user, setUser }) {
   const navigate = useNavigate();
   const [tab, setTab] = useState(0);
+  const [activePage, setActivePage] = useState('home');
+  const [selectedReportId, setSelectedReportId] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState(null); 
 
   const navigationTabs = [
     { icon: <img src={tab === 0 ? homeIconSelected : homeIcon} width="20" /> },
-    { icon: <HistoryIcon />  },
-    { icon: <img src={tab === 2 ? profileIconSelected : profileIcon} width="20" /> }
+    { icon: <HistoryIcon /> },
+    { icon: <img src={tab === 2 ? profileIconSelected : profileIcon} width="20" /> },
   ];
 
   const handleLogout = async () => {
@@ -35,59 +45,112 @@ function AdminPages({ user, setUser }) {
     setUser(null);
     navigate('/');
   };
+  
+
+  const renderContent = () => {
+    if (activePage === 'laporanList') {
+      return (
+        <AdminReportPayment
+          onBack={() => setActivePage('home')}
+          onSelectReport={(id) => {
+            setSelectedReportId(id);
+            setActivePage('laporanDetail');
+          }}
+        />
+      );
+    }
+
+    if (activePage === 'laporanDetail') {
+      return (
+        <AdminReportDetail
+          reportId={selectedReportId}
+          onBack={() => setActivePage('laporanList')}
+        />
+      );
+    }
+
+    if (activePage === 'dataPenghuni') {
+      return (
+        <AdminUserList
+          onBack={() => setActivePage('home')}
+          onSelectUser={(id) => {
+            setSelectedUserId(id);
+            setActivePage('userDetail');
+          }}
+        />
+      );
+    }
+
+    if (activePage === 'userDetail') {
+      return (
+        <AdminUserDetail
+          userId={selectedUserId}
+          onBack={() => setActivePage('dataPenghuni')}
+        />
+      );
+    }
+
+    if (activePage === 'monitoring') {
+      return (
+        <MonitoringSensor
+          onBack={() => setActivePage('home')}
+        />
+      );
+    }
+    
+
+    if (tab === 0) {
+      return (
+        <HomeContent
+          onOpenLaporan={() => setActivePage('laporanList')}
+          onOpenDataPenghuni={() => setActivePage('dataPenghuni')}
+          onOpenMonitoring={()=> setActivePage('monitoring')}
+
+
+        />
+      );
+    }
+
+    if (tab === 1) return <HistoryContent />;
+    if (tab === 2) return <ProfileContent user={user} setUser={setUser} handleLogout={handleLogout} />;
+  };
+
+  if (!user) return <Navigate to="/" />;
 
   return (
     <MobileContainer>
-      <CommonBackground 
-        bgTop={bgTop} 
-        bgBottom={bgBottom} 
-        sx={{ 
-          position: 'fixed', // Tetap di tempatnya
-          top: 0,
-          left: 0,
-          zIndex: 0, // Di belakang elemen lain
-        }} 
+      <CommonBackground
+        bgTop={bgTop}
+        bgBottom={bgBottom}
+        sx={{ position: 'fixed', top: 0, left: 0, zIndex: 0 }}
       />
-
-      {/* Greeting (Tetap di atas) */}
-      <CommonGreeting 
-        username={user.username} 
-        appName="Smartsewa" 
-        sx={{ 
-          position: 'fixed', // Tetap di atas
+      <CommonGreeting
+        username={user.username}
+        appName="Smartsewa"
+        sx={{
+          position: 'fixed',
           width: '100%',
-          zIndex: 2, // Di atas background
-          // backgroundColor: 'white', // Agar teks terlihat jelas
+          zIndex: 2,
           padding: '16px',
-        }} 
+        }}
       />
-
-      
-      {/* Content Area */}
-      <Box sx={{
-        height: 'calc(100vh - 200px)',
-        // overflowY: 'scroll',
-         paddingTop: '150px',
-        paddingBottom: '56px',
-        position: 'relative', 
-        top: 0,
-        left: 0,
-        width: '100%',
-        zIndex: 0, // Pastikan lebih kecil dari elemen lain
-        // scrollbarWidth: 'none', // Untuk Firefox
-        // '&::-webkit-scrollbar': {
-        //   display: 'none' // Untuk Chrome, Safari, Edge
-        // }
-      }}>
-
-        {tab === 0 && <HomeContent />}
-        {tab === 1 && <HistoryContent />}
-        {tab === 2 && <ProfileContent user={user} setUser={setUser} handleLogout={handleLogout} />}
+      <Box
+        sx={{
+          height: 'calc(100vh - 200px)',
+          pt: '130px',
+          pb: '56px',
+          position: 'relative',
+          zIndex: 0,
+        }}
+      >
+        {renderContent()}
       </Box>
-
       <CommonBottomNavigation
         value={tab}
-        onChange={(_, newValue) => setTab(newValue)}
+        onChange={(_, newValue) => {
+          setTab(newValue);
+          setActivePage('home');
+        }}
         tabs={navigationTabs}
         selectedColor="#5EC38B"
       />

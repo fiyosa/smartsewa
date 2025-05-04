@@ -23,7 +23,12 @@ module.exports = (sequelize, DataTypes) => {
         tanggalPembayaran:{ // Tanggal pembayaran
             type : DataTypes.DATE,
             allowNull : false 
-        }
+        },
+        status: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            defaultValue: 'pending'
+          }          
         }, {
         tableName:'laporan_pembayarans',
         timestamps:true,// auto createdAt & updatedAt 

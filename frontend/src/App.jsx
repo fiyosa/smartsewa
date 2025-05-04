@@ -6,6 +6,13 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import AdminHome from './pages/admin/AdminPages';
 import UserHome from './pages/user/UserPages';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import ReportPayment from './components/user/ReportPayment';
+import AdminReportPayment from './components/admin/AdminReportPayment';
+import AdminReportDetail from './components/admin/AdminReportDetail';
+import MonitoringSensor from './components/admin/MonitoringSensor';
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -51,7 +58,25 @@ function App() {
           )
         }
       />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/report-payment" element={<ReportPayment />} />
+       {/* <Route path="/admin/laporan" element={<AdminReportPayment />} /> */}
+      <Route
+        path="/admin/laporan"
+        element={
+          user && user.role === 'admin' ? (
+            <AdminReportPayment />
+          ) : (
+            <Navigate to="/" />
+          )
+        }
+      />
+      <Route path="/admin/laporan/:id" element={<AdminReportDetail />} />
+      <Route path="/admin/monitoring" element={<MonitoringSensor />} />
+
     </Routes>
+
     </ThemeProvider>
   );
 }

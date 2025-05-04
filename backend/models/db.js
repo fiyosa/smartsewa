@@ -11,11 +11,18 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-// Muat model User
+// Muat model 
 db.User = require('./user')(sequelize, Sequelize);
-
-// Muat model LaporanPembayaran
 db.LaporanPembayaran = require('./laporanPembayaran')(sequelize, Sequelize);
+db.History = require('./history')(sequelize, Sequelize.DataTypes);
+
+// Relasi 
+db.User.hasMany(db.LaporanPembayaran, { foreignKey: 'userId' });
+db.LaporanPembayaran.belongsTo(db.User, { foreignKey: 'userId' });
+db.History.belongsTo(db.User, { foreignKey: 'userId' });
+db.History.belongsTo(db.LaporanPembayaran, { foreignKey: 'laporanId' });
+db.LaporanPembayaran.hasMany(db.History, { foreignKey: 'laporanId' });
+
 
 //sinkronisasi model
 sequelize.sync({ alter: true })  // 

@@ -4,6 +4,7 @@ const session = require('express-session');
 const authRoutes = require('./routes/auth');
 const db = require('./models/db'); 
 const app = express();
+const path = require('path');
 
 app.use(cors({ origin: ['http://localhost:3000',"http://localhost:5173"], credentials: true }));
 
@@ -18,6 +19,7 @@ app.use(session({
 
 // Gunakan route untuk endpoint API
 app.use('/api', authRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Sinkronisasi database
 db.sequelize.sync()

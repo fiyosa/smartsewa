@@ -88,7 +88,7 @@ const ReportPayment = ({ onClose }) => {
       <Box sx={{
         maxWidth: 400,
         mx: 'auto', my: 4, p: 3,
-        bgcolor: '#fff',
+        // bgcolor: '#fff',
         borderRadius: '24px',
         boxShadow: 1,
         position: 'relative',
@@ -167,7 +167,7 @@ const ReportPayment = ({ onClose }) => {
                   mt: 2,
                   width: '100%',
                   maxWidth: 200,
-                  maxHeight: 200,
+                  maxHeight: 500,
                   objectFit: 'contain',
                   borderRadius: 5,
                   boxShadow: 1,

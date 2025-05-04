@@ -81,7 +81,7 @@ function UserPages({ user, setUser }) {
       }}>
 
         {tab === 0 && <HomeContent />}
-        {tab === 1 && <HistoryContent />}
+        {tab === 1 && <HistoryContent userId={user.id} />}
         {tab === 2 && <ProfileContent user={user} setUser={setUser} handleLogout={handleLogout} />}
       </Box>
 

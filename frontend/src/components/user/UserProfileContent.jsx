@@ -1,85 +1,112 @@
-import React from 'react';
-import { Typography, Button, Box, Avatar, Paper } from '@mui/material';
+  import React from 'react';
+  import {
+    Box,
+    Typography,
+    Button,
+    Avatar,
+    Paper,
+  } from '@mui/material';
 
-function ProfileContent({ user, handleLogout }) {
-  return (
-    <Box sx={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
-      alignItems: 'center', 
-      p: 3,
-      maxWidth: 500,
-      mx: 'auto'
-    }}>
-      <Paper elevation={3} sx={{ 
-        p: 3, 
-        width: '100%',
-        borderRadius: '16px',
-        backgroundColor: '#f5f5f5'
-      }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 3 }}>
-          <Avatar 
-            sx={{ 
-              width: 100, 
-              height: 100, 
-              mb: 2,
-              bgcolor: '#547E96',
-              fontSize: '2.5rem'
+  function ProfileContent({ user, handleLogout }) {
+    return (
+      <Box
+        sx={{
+          height: 'calc(100vh - 200px)',
+          overflow: 'hidden',
+          px: 2,
+          paddingBottom: '80%',
+
+        }}
+      >
+          {/* Scrollable Area */}
+          <Box
+            sx={{
+              flex: 1,
+              overflowY: 'auto',
+              px: 3,
+              py: 4,
+              // paddingBottom: '80%',
             }}
           >
-            {user?.username?.charAt(0).toUpperCase()}
-          </Avatar>
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold' }}>
-            {user?.username}
-          </Typography>
-        </Box>
+            {/* Avatar & Username */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
+              <Avatar
+                sx={{
+                  width: 100,
+                  height: 100,
+                  mb: 2,
+                  bgcolor: '#5EC38B',
+                  fontSize: '2.5rem',
+                }}
+              >
+              </Avatar>
+            </Box>
 
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
-            Informasi Akun
-          </Typography>
-          
-          <Box sx={{ 
-            backgroundColor: 'white', 
-            p: 2, 
-            borderRadius: '8px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-          }}>
-            <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>Email:</strong> {user?.email}
+            {/* Informasi Akun */}
+            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 1 }}>
+              Nama
             </Typography>
-            <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>Status:</strong> {user?.role === 'user' ? 'Penyewa' : user?.role}
+            <Box sx={inputStyle}>{user?.username}</Box>
+
+            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mt: 2, mb: 1 }}>
+              Email
             </Typography>
-            {user?.no_room && (
-              <Typography variant="body1" sx={{ mb: 1 }}>
-                <strong>No. Room:</strong> {user.no_room}
-              </Typography>
+            <Box sx={inputStyle}>{user?.email}</Box>
+
+            {user?.role === 'user' && (
+              <>
+                <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mt: 2, mb: 1 }}>
+                  No. Kost
+                </Typography>
+                <Box sx={inputStyle}>
+                  {user?.no_room ? user.no_room : 'Belum ada'}
+                </Box>
+              </>
             )}
-            <Typography variant="body1">
-            <strong>Bergabung sejak:</strong> {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('id-ID') : '-'}
+
+            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mt: 2, mb: 1 }}>
+              Bergabung sejak
             </Typography>
+            <Box sx={inputStyle}>
+              {user?.createdAt ? new Date(user.createdAt).toLocaleDateString('id-ID') : '-'}
+            </Box>
+
+            <Button
+              variant="contained"
+              // color="error"
+              // fullWidth
+              onClick={handleLogout}
+              sx={{
+                minWidth: '60%',
+                minHeight: '50px',
+                mx: 'auto',
+                display: 'block',
+                bgcolor: '#FF4D4D',
+                py: 1.5,
+                mt: 4,
+                borderRadius: 4,
+                textTransform: 'none',
+                fontWeight: 'bold',
+                transition: 'transform 0.3s ease',
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                  backgroundColor: '#FF1A1A',
+                },
+              }}
+            >
+              Keluar
+            </Button>
           </Box>
-        </Box>
+      </Box>
+    );
+  }
 
-        <Button 
-          variant="contained" 
-          color="error" 
-          onClick={handleLogout}
-          fullWidth
-          sx={{ 
-            mt: 2,
-            py: 1.5,
-            borderRadius: '8px',
-            textTransform: 'none',
-            fontWeight: 'bold'
-          }}
-        >
-          Keluar
-        </Button>
-      </Paper>
-    </Box>
-  );
-}
+  const inputStyle = {
+    // backgroundColor: '#fff',
+    padding: '12px 16px',
+    borderRadius: '12px',
+    border: '1px solid #ddd',
+    fontSize: '1rem',
+  };
 
-export default ProfileContent;
+  export default ProfileContent;
