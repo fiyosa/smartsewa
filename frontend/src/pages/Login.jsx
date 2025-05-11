@@ -117,7 +117,7 @@ function Login({ setUser }) {
           textDecoration: 'underline',
           marginLeft: '8px',
         }}
-        onClick={() => navigate('/forgot-password')} // <- tambahkan ini
+        onClick={() => navigate('/forgot-password')} // 
       >
         Lupa Kata Sandi?
       </Typography>

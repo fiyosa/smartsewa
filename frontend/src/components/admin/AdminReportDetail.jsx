@@ -217,7 +217,7 @@ const AdminReportDetail = ({ reportId, onBack }) => {
                 />
               </DialogContent>
               <DialogActions>
-                <Button sx={{ borderRadius: 4, color: '#5EC38B', '&:hover': { color: '#51B57D' } }} onClick={() => setOpenDialog(false)}>Batal</Button>
+                <Button sx={{ borderRadius: 4, color: 'black', '&:hover': { color: 'black' } }} onClick={() => setOpenDialog(false)}>Batal</Button>
                 <Button
                   variant="contained"
                   color="error"

@@ -109,19 +109,29 @@ const AdminHistoryContent = () => {
 
               return (
                 <React.Fragment key={index}>
-                  <ListItem disablePadding sx={{ py: 0.3 }}>
-                    <ListItemText
-                      primary={activity}
-                      secondary={
-                        ['dikirim', 'dikonfirmasi', 'ditolak'].some(word => item.activity.includes(word))
-                          ? `${date} • ${periode} • Rp ${jumlah}`
-                          : `${date}`
-                      }          
-                      primaryTypographyProps={{ sx: { mb: 0.5 } }}    
-                      secondaryTypographyProps={{ color: 'text.secondary' }}
-                    />
+                  <ListItem disablePadding sx={{ py: 0.5 }}>
+                    <Box
+                      sx={{
+                        width: '100%',
+                        borderBottom: '1px solid #eee',
+                        pb: 0.5,
+                        ml: 1,
+                        pr: 1,
+                      }}
+                    >
+                      <ListItemText
+                        primary={activity}
+                        secondary={
+                          ['dikirim', 'dikonfirmasi', 'ditolak'].some(word => item.activity.includes(word))
+                            ? `${date} • ${periode} • Rp ${jumlah}`
+                            : `${date}`
+                        }
+                        primaryTypographyProps={{ sx: { fontWeight: 'bold', fontSize: 14 } }} 
+                        secondaryTypographyProps={{ color: 'text.secondary', fontSize: 12 }}
+                      />
+                    </Box>
                   </ListItem>
-                  <Divider component="li" />
+
                 </React.Fragment>
               );
             })}

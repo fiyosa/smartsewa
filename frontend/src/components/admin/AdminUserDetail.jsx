@@ -6,7 +6,7 @@ import {
   import { useEffect, useState } from 'react';
   import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
   
-  const AdminUserDetail = ({ userId, onBack }) => {
+  const AdminUserDetail = ({ userId, onBack, onViewPaymentHistory }) => {
     const [user, setUser] = useState(null);
     const [allUsers, setAllUsers] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState('');
@@ -48,7 +48,7 @@ import {
       try {
         setSaving(true);
         await axios.put(`${API_URL}/api/users/${userId}`, { no_room: selectedRoom });
-        await fetchUser(); // Refresh data
+        await fetchUser(); 
       } catch (err) {
         console.error('Gagal update kamar:', err);
       } finally {
@@ -59,7 +59,7 @@ import {
     if (!user) return <Box p={4}><CircularProgress /></Box>;
   
     return (
-      <Box maxWidth={414} mx="auto" height="100vh" display="flex" flexDirection="column" overflow="hidden">
+      <Box maxWidth={414} mx="auto" height="80vh" display="flex" flexDirection="column" overflow="hidden">
         {/* Header Sticky */}
         <Box
           sx={{
@@ -86,22 +86,39 @@ import {
           <Box display="flex" justifyContent="center" mb={2}>
             <Avatar
               src="/avatar-placeholder.png"
-              sx={{ width: 100, height: 100, bgcolor: '#5EC38B'}}
+              sx={{ width: 80, height: 80, bgcolor: '#5EC38B'}}
             />
           </Box>
   
           <Typography variant="body2" fontWeight="bold" mb={0.5}>Nama</Typography>
-          <Paper sx={{ p: 1.5, mb: 2, borderRadius: 4 }}>
+          <Box
+            sx={{
+              mb: 2,
+              px: 2,
+              py: 1.5,
+              borderRadius: 4,
+              border: '1px solid #ccc',
+              backgroundColor: '#fff',
+            }}
+          >
             <Typography>{user.username}</Typography>
-          </Paper>
-  
+          </Box>
+
           <Typography variant="body2" fontWeight="bold" mb={0.5}>Email</Typography>
-          <Paper sx={{ p: 1.5, mb: 4, borderRadius: 4 }}>
+          <Box
+            sx={{
+              mb: 3,
+              px: 2,
+              py: 1.5,
+              borderRadius: 4,
+              border: '1px solid #ccc',
+              backgroundColor: '#fff',
+            }}
+          >
             <Typography>{user.email}</Typography>
-          </Paper>
-  
-          {/* <Typography variant="body2" fontWeight="bold" mb={0.5}>No Kost</Typography> */}
-          <FormControl fullWidth sx={{ mb: 3, borderRadius: 8 }}>
+          </Box>
+
+            <FormControl fullWidth sx={{ mb: 3, borderRadius: 8 }}>
             <InputLabel>Nomor Kamar</InputLabel>
             <Select
               value={selectedRoom}
@@ -113,7 +130,30 @@ import {
               ))}
             </Select>
           </FormControl>
-  
+          <Button
+            fullWidth
+            variant="outlined"
+            onClick={onViewPaymentHistory}
+            sx={{
+              mb: 3, 
+              borderRadius: 3,
+              justifyContent: 'space-between',
+              px: 2,
+              py: 1.5,
+              textTransform: 'none',
+              fontWeight: 'bold',
+              borderColor: '#ccc',
+              color: 'black',
+              '&:hover': {
+                borderColor: '#aaa',
+                backgroundColor: '#f9f9f9',
+              }
+            }}
+            endIcon={<ArrowBackIosNewIcon sx={{ transform: 'rotate(180deg)' }} />}
+            >
+              Riwayat Pembayaran
+            </Button>
+
           <Button
             fullWidth
             variant="contained"

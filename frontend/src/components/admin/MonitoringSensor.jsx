@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   Box,
   Typography,
@@ -12,10 +13,45 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import SensorChart from '../common/SensorChart';
 import PowerAccessDisplay from '../common/PowerAccessDisplay';
 
-const users = ['User 1', 'User 2', 'User 3'];
-
 export default function MonitoringSensor({ onBack }) {
-  const [selectedUser, setSelectedUser] = useState(users[0]);
+  const [userList, setUserList] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [sensorData, setSensorData] = useState([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/users/with-room');
+        if (res.data.length > 0) {
+          setUserList(res.data);
+          setSelectedUser(res.data[0]);
+        }
+      } catch (err) {
+        console.error("Gagal ambil users:", err);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const fetchMonitoring = async () => {
+      if (!selectedUser?.no_room) return;
+      try {
+        const res = await axios.get(`http://localhost:5000/api/monitoring?kamar=${selectedUser.no_room}`);
+        const formatted = res.data.sensor.map(item => ({
+          time: new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          suhu: item.suhu,
+          kelembaban: item.kelembapan
+        }));
+        setSensorData(formatted);
+      } catch (err) {
+        console.error("Gagal ambil data sensor:", err);
+      }
+    };
+
+    fetchMonitoring();
+  }, [selectedUser]);
 
   return (
     <Box
@@ -65,55 +101,35 @@ export default function MonitoringSensor({ onBack }) {
         }}
       >
         <Container maxWidth="sm" sx={{ px: 0 }}>
-          {/* Dropdown (TextField select, tanpa tambahan warna) */}
+          {/* Dropdown */}
           <TextField
             select
             fullWidth
             label="Pilih Penghuni"
-            value={selectedUser}
-            onChange={(e) => setSelectedUser(e.target.value)}
-            variant="outlined"
-            sx={{
-              mb: 3,
-              '& .MuiOutlinedInput-root': {
-                borderRadius: 2,
-              },
+            value={selectedUser?.id || ''}
+            onChange={(e) => {
+              const user = userList.find(u => u.id === parseInt(e.target.value));
+              setSelectedUser(user);
             }}
+            variant="outlined"
+            sx={{ mb: 1, '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
           >
-            {users.map((user) => (
-              <MenuItem key={user} value={user}>
-                {user}
+            {userList.map((user) => (
+              <MenuItem key={user.id} value={user.id}>
+                {`Kamar ${user.no_room} - ${user.username}`}
               </MenuItem>
             ))}
           </TextField>
 
+          {/* Komponen Listrik */}
+          <PowerAccessDisplay />
+
           {/* Grafik */}
-          <Paper
-            elevation={2}
-            sx={{
-              p: 2,
-              mb: 3,
-              borderRadius: 3,
-            }}
-          >
+          <Paper elevation={2} sx={{ p: 2, borderRadius: 3 }}>
             <Typography fontWeight="bold" mb={1}>
               Grafik Suhu & Kelembaban
             </Typography>
-            <SensorChart />
-          </Paper>
-
-          {/* Listrik */}
-          <Paper
-            elevation={2}
-            sx={{
-              p: 2,
-              borderRadius: 3,
-            }}
-          >
-            <Typography fontWeight="bold" mb={1}>
-              Sisa Akses Listrik
-            </Typography>
-            <PowerAccessDisplay />
+            <SensorChart data={sensorData} />
           </Paper>
         </Container>
       </Box>

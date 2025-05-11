@@ -9,7 +9,16 @@ import buttonImage4 from '../../assets/ButtonMonitoringSensor.png';
 function HomeContent({ onOpenLaporan, onOpenDataPenghuni, onOpenMonitoring }) {
   // Fungsi untuk menangani klik pada tombol laporan pembayaran 
   return (
-    <Box sx={{ height: 'calc(100vh - 230px)', overflow: 'hidden', position: 'relative', zIndex: 1 }}>
+    <Box
+      sx={{
+        height: 'calc(100vh - 230px)',
+        overflowY: 'auto', // ✅ biarkan scroll secara vertikal
+        position: 'relative',
+        zIndex: 1,
+        px: 2, 
+        pb: 2, 
+      }}
+    >
       <Box
         sx={{
           display: 'flex',

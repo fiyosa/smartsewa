@@ -16,6 +16,8 @@ import AdminReportDetail from '../../components/admin/AdminReportDetail';
 import AdminUserList from '../../components/admin/AdminUserList';
 import AdminUserDetail from '../../components/admin/AdminUserDetail';
 import MonitoringSensor from '../../components/admin/MonitoringSensor';
+import AdminUserPaymentHistory from '../../components/admin/AdminUserPaymentHistory';
+import AdminUserPaymentHistoryDetail from '../../components/admin/AdminUserPaymentHistoryDetail';
 
 
 import HistoryIcon from '@mui/icons-material/History';
@@ -32,6 +34,7 @@ function AdminPages({ user, setUser }) {
   const [activePage, setActivePage] = useState('home');
   const [selectedReportId, setSelectedReportId] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null); 
+  const [selectedPaymentId, setSelectedPaymentId] = useState(null);
 
   const navigationTabs = [
     { icon: <img src={tab === 0 ? homeIconSelected : homeIcon} width="20" /> },
@@ -86,6 +89,29 @@ function AdminPages({ user, setUser }) {
         <AdminUserDetail
           userId={selectedUserId}
           onBack={() => setActivePage('dataPenghuni')}
+          onViewPaymentHistory={() => setActivePage('userPaymentHistory')}
+        />
+      );
+    }
+
+    if (activePage === 'userPaymentHistory') {
+      return (
+        <AdminUserPaymentHistory
+          userId={selectedUserId}
+          onBack={() => setActivePage('userDetail')}
+          onSelectPayment={(id) => {
+            setSelectedPaymentId(id);
+            setActivePage('userPaymentHistoryDetail');
+          }}
+        />
+      );
+    }
+    
+    if (activePage === 'userPaymentHistoryDetail') {
+      return (
+        <AdminUserPaymentHistoryDetail
+          paymentId={selectedPaymentId}
+          onBack={() => setActivePage('userPaymentHistory')}
         />
       );
     }
@@ -105,7 +131,10 @@ function AdminPages({ user, setUser }) {
           onOpenLaporan={() => setActivePage('laporanList')}
           onOpenDataPenghuni={() => setActivePage('dataPenghuni')}
           onOpenMonitoring={()=> setActivePage('monitoring')}
-
+          onOpenPaymentHistory={(id) => {
+            setSelectedUserId(id);
+            setActivePage('userPaymentHistory');
+          }}
 
         />
       );

@@ -38,7 +38,7 @@ const AdminUserList = ({ onBack, onSelectUser }) => {
       sx={{
         maxWidth: 414,
         mx: 'auto',
-        height: '100vh',
+        height: '80vh',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden'
@@ -47,16 +47,16 @@ const AdminUserList = ({ onBack, onSelectUser }) => {
       {/* Sticky Header with Back Button */}
       <Box
         sx={{
-    display: 'flex',
-    alignItems: 'center',
-    mb: 2,
-    position: 'sticky',
-    top: 0,
-    zIndex: 10,
-    borderBottom: '1px solid #eee',
-    py: 1
-  }}
->
+        display: 'flex',
+        alignItems: 'center',
+        position: 'sticky',
+        top: 0,
+        zIndex: 10,
+        borderBottom: '1px solid #eee',
+        px: 2,
+        py: 1.5
+      }}
+    >
   <IconButton onClick={onBack} size="small">
     <ArrowBackIosNewIcon fontSize="small" />
   </IconButton>
@@ -71,15 +71,25 @@ const AdminUserList = ({ onBack, onSelectUser }) => {
           <CircularProgress />
         </Box>
       ) : (
-        <Box sx={{ flex: 1, overflowY: 'auto', px: 1,paddingBottom: '80%' }}>
+        <Box sx={{ flex: 1, overflowY: 'auto', px: 1, paddingBottom: '80%' }}>
           <List>
             {users.map((user) => (
               <ListItem
                 key={user.id}
                 button
                 onClick={() => onSelectUser(user.id)}
-                sx={{ borderBottom: '1px solid #eee', alignItems: 'flex-start', py: 1.5 }}
+                sx={{ alignItems: 'flex-start', py: 1.5 }}
               >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '100%',
+                    borderBottom: '1px solid #eee',
+                    pb: 1.5,
+                    mx: '10px', 
+                  }}
+                >
                 <ListItemAvatar>
                   <Avatar sx={{ bgcolor: '#5EC38B' }}>
                     {user.username?.[0]?.toUpperCase()}
@@ -87,16 +97,22 @@ const AdminUserList = ({ onBack, onSelectUser }) => {
                 </ListItemAvatar>
                 <ListItemText
                   primary={
-                    <Typography fontWeight="bold">
-                      {user.username} - {user.no_room ? `(No ${user.no_room})` : 'Belum aktif'}
+                    <Typography fontWeight="bold" fontSize={16}>
+                      {user.username}
                     </Typography>
                   }
                   secondary={
-                    <Typography variant="body2" color="text.secondary">
-                      {user.email}
-                    </Typography>
+                    <>
+                      <Typography variant="body2" color="text.secondary">
+                        {user.no_room ? `Kamar: No ${user.no_room}` : 'Belum memiliki kamar'}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {user.email}
+                      </Typography>
+                    </>
                   }
                 />
+                </Box>
               </ListItem>
             ))}
           </List>

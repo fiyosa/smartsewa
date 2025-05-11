@@ -39,7 +39,7 @@ const AdminReportPayment = ({ onSelectReport, onBack }) => {
       sx={{
         maxWidth: 414,
         mx: 'auto',
-        height: '100vh',
+        height: '80vh',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
@@ -88,11 +88,21 @@ const AdminReportPayment = ({ onSelectReport, onBack }) => {
                 button
                 onClick={() => onSelectReport(lapor.id)}
                 sx={{
-                  borderBottom: '1px solid #eee',
+                  // borderBottom: '1px solid #eee',
                   alignItems: 'flex-start',
                   py: 1.5,
                 }}
               >
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '100%',
+                    borderBottom: '1px solid #eee',
+                    pb: 1.5,
+                    mx: '10px', 
+                  }}
+                >
                 <ListItemAvatar>
                   <Avatar
                     alt={lapor.User?.username}
@@ -106,13 +116,15 @@ const AdminReportPayment = ({ onSelectReport, onBack }) => {
                   primary={
                     <Typography fontWeight="bold">
                       {lapor.User?.username}{' '}
-                      {lapor.User?.no_room ? `(No ${lapor.User.no_room})` : ''}
                     </Typography>
                   }
                   secondary={
                     <>
                       <Typography variant="body2" color="text.secondary">
-                        {lapor.jenisPembayaran} — {lapor.periodePembayaran}
+                      {lapor.User?.no_room ? `Kamar ( ${lapor.User.no_room} )` : ''} 
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                      {lapor.jenisPembayaran} — {lapor.periodePembayaran}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
                         {new Date(lapor.tanggalPembayaran).toLocaleString('id-ID', {
@@ -127,6 +139,7 @@ const AdminReportPayment = ({ onSelectReport, onBack }) => {
                     </>
                   }
                 />
+                </Box>
               </ListItem>
             ))}
           </List>
