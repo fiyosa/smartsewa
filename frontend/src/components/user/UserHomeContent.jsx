@@ -23,28 +23,36 @@ function UserHomeContent() {
   };
 
   // Fetch temperature and humidity data
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/sensor-data'); // Replace with the correct API endpoint
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
-        }
-        const data = await response.json();
-        setTemperature(data.temperature || null);
-        setHumidity(data.humidity || null);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-        setTemperature(null);
-        setHumidity(null);
-      }
-    };
+useEffect(() => {
+  const fetchData = async () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user?.no_room) {
+      setTemperature(null);
+      setHumidity(null);
+      return;
+    }
 
-    fetchData();
-  }, []);
+    try {
+      const res = await fetch(`http://localhost:5000/api/monitoring?kamar=${user.no_room}`);
+      const data = await res.json();
+      const latest = data.sensor?.[0];
+      setTemperature(latest?.suhu ?? null);
+      setHumidity(latest?.kelembapan ?? null);
+    } catch (error) {
+      console.error('Failed to fetch monitoring data:', error);
+      setTemperature(null);
+      setHumidity(null);
+    }
+  };
+
+  fetchData();
+  const interval = setInterval(fetchData, 60000); // Refresh per 1 menit
+
+  return () => clearInterval(interval);
+}, []);
 
   return (
-    <Box sx={{ height: 'calc(100vh - 230px)', overflow: 'hidden' }}>
+    <Box sx={{ height: 'calc(110vh - 200px)', overflow: 'hidden' }}>
       <Box
         sx={{
           height: '100%',

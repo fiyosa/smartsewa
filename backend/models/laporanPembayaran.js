@@ -4,23 +4,23 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
-        jenisPembayaran: { // Jenis pembayaran (BCA, Dana, OVO, dll)
+        jenisPembayaran: { 
             type: DataTypes.STRING,
             allowNull: false,
         },
-        jumlah: { // Jumlah pembayaran
+        jumlah: { 
             type: DataTypes.FLOAT,
             allowNull: false,
         },
-        periodePembayaran: { // Periode pembayaran (misal April / Januari - Maret)
+        periodePembayaran: { 
             type: DataTypes.STRING,
             allowNull: false,
         },
-        buktiBayarUrl: { // URL gambar bukti bayar
+        buktiBayarUrl: { 
             type: DataTypes.STRING,
             allowNull: true, 
         },
-        tanggalPembayaran:{ // Tanggal pembayaran
+        tanggalPembayaran:{ 
             type : DataTypes.DATE,
             allowNull : false 
         },
@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
           }          
         }, {
         tableName:'laporan_pembayarans',
-        timestamps:true,// auto createdAt & updatedAt 
+        timestamps:true,
         });
     
         return LaporanPembayaran;

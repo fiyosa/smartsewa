@@ -10,6 +10,7 @@ const userRoutes = require('./routes/userRoutes');
 const laporanRoutes = require('./routes/laporanRoutes');
 const historyRoutes = require('./routes/historyRoutes');
 const sensorRoutes = require('./routes/sensorRoutes');
+const relayRoutes = require('./routes/relayRoutes');
 
 require('dotenv').config();
 
@@ -34,6 +35,7 @@ app.use('/api', userRoutes);
 app.use('/api', laporanRoutes);
 app.use('/api', historyRoutes);
 app.use('/api', sensorRoutes);
+app.use('/api', relayRoutes);
 
 // Sinkronisasi database
 db.sequelize.sync()

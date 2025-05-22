@@ -3,6 +3,8 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const { Op } = require('sequelize');
 const db = require('../models');
+const { sendEmail } = require('../utils/emailService');
+require('dotenv').config();
 
 exports.register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -73,30 +75,24 @@ exports.forgotPassword = async (req, res) => {
     if (!user) return res.status(404).json({ error: 'Email tidak ditemukan' });
 
     const token = crypto.randomBytes(20).toString('hex');
-    const expiry = new Date(Date.now() + 3600000); // 1 jam
+    const expiry = new Date(Date.now() + 3600000);
 
     await user.update({ reset_token: token, reset_token_expiry: expiry });
 
     const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
 
-    await transporter.sendMail({
-      from: `"Smart Sewa" <${process.env.EMAIL_USER}>`,
-      to: user.email,
-      subject: 'Reset Password',
-      html: `
+    const subject = `Reset Password`;
+    const emailBody = `
         <p>Hi ${user.username},</p>
         <p>Klik link berikut untuk mereset password:</p>
         <a href="${resetLink}">${resetLink}</a>
         <p><i>Link ini akan kadaluarsa dalam 1 jam.</i></p>
-      `
-    });
+        `;
+        
+    if (user?.email) {
+      await sendEmail(user.email, subject, emailBody);
+    }
+
 
     res.json({ message: 'Link reset password dikirim ke email' });
   } catch (err) {

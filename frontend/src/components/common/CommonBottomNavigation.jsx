@@ -20,7 +20,7 @@ const CommonBottomNavigation = ({
         width: '100%',
         maxWidth: '414px',
         bgcolor: 'background.paper',
-        boxShadow: 5,
+        boxShadow: 10,
         zIndex: 3,
         '& .Mui-selected': {
           color: selectedColor

@@ -41,6 +41,26 @@ const UserHistoryContent = ({ userId }) => {
     }
     if (activity.includes('diberi nomor')) return `Anda telah diberi ${activity.split('diberi ')[1]}`;
     if (activity.includes('dihapus nomor')) return 'Nomor kost Anda telah dihapus';
+    if (activity.includes('dihapus nomor')) return 'Nomor kost Anda telah dihapus';
+    if (activity.includes('sensor abnormal')) {
+      const matchSuhu = activity.match(/suhu (\d+(\.\d+)?)C/i);
+      const matchKelembapan = activity.match(/kelembapan (\d+(\.\d+)?)%/i);
+      const matchSuara = activity.match(/suara/i);
+
+      if (matchSuhu) {
+        const suhu = matchSuhu[1];
+        return `Terdeteksi suhu abnormal ${suhu}°C di kamarmu`;
+      }
+      if (matchKelembapan) {
+        const kelembapan = matchKelembapan[1];
+        return `Tingkat kelembapan tidak normal: ${kelembapan}% di kamarmu`;
+      }
+      if (matchSuara) {
+        return 'Terdeteksi kebisingan tidak wajar di kamarmu';
+      }
+
+      return 'Terdeteksi nilai sensor abnormal di kamarmu';
+    }
     return activity;
   };
   
@@ -54,6 +74,7 @@ const UserHistoryContent = ({ userId }) => {
         display: 'flex',
         flexDirection: 'column',
         mx: 'auto',
+        mt: 5,
       }}
     >
       <Typography

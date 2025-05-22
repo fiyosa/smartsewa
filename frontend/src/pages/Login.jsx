@@ -52,30 +52,44 @@ function Login({ setUser }) {
   };
 
   return (
-    <MobileContainer>
-      {/* Background Top */}
-      <Box
-        component="img"
-        src={bgTop}
-        alt="Background Top"
-        sx={{
-          width: '100%',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          zIndex: 0,
-          height: '18%',
-        }}
-      />
+<MobileContainer sx={{ position: 'relative' }}>
+  {/* Background Top */}
+  <Box
+    component="img"
+    src={bgTop}
+    alt="Background Top"
+    sx={{
+      width: '100%',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      zIndex: 0,
+      height: '18%',
+    }}
+  />
 
-      <Typography variant="h4" sx={{ mt: '65px', textAlign: 'left' }}>
+  {/* Kontainer Tengah */}
+  <Box
+    sx={{
+      position: 'relative',
+      zIndex: 1,
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      px: 2,
+    }}
+  >
+    <Box sx={{ width: '95%', maxWidth: 400 }}>
+      <Typography variant="h4" sx={{ textAlign: 'left' }}>
         Masuk
       </Typography>
-      <Typography variant="body1" sx={{ mt: '8px', textAlign: 'left', color: '#666464', marginLeft: '3px' }}>
+      <Typography variant="body1" sx={{ mt: 1, textAlign: 'left', color: '#666464' }}>
         Hi, Selamat datang di Smartsewa
       </Typography>
 
-      <Box sx={{ mt: '40px', width: '100%' }}>
+      <Box sx={{ mt: 4 }}>
         <TextField
           InputProps={{ sx: { borderRadius: 5 } }}
           label="Email"
@@ -89,17 +103,14 @@ function Login({ setUser }) {
             sx: { borderRadius: 5 },
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton
-                  onClick={handleClickShowPassword}
-                  edge="end"
-                >
+                <IconButton onClick={handleClickShowPassword} edge="end">
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
             ),
           }}
           label="Kata Sandi"
-          type={showPassword ? 'text' : 'password'} // Toggle antara text dan password
+          type={showPassword ? 'text' : 'password'}
           fullWidth
           margin="normal"
           value={password}
@@ -111,20 +122,19 @@ function Login({ setUser }) {
         variant="caption"
         color="primary"
         sx={{
-          display: 'inline',
+          display: 'inline-block',
           fontWeight: 'bold',
           cursor: 'pointer',
           textDecoration: 'underline',
-          marginLeft: '8px',
+          mt: 1,
         }}
-        onClick={() => navigate('/forgot-password')} // 
+        onClick={() => navigate('/forgot-password')}
       >
         Lupa Kata Sandi?
       </Typography>
 
       <Button
         variant="contained"
-        color="primary"
         fullWidth
         onClick={handleLogin}
         sx={{
@@ -138,45 +148,47 @@ function Login({ setUser }) {
         Masuk
       </Button>
 
-      <div style={{ marginTop: '280px', textAlign: 'left' }}>
-        <Typography variant="subtitle1" sx={{ display: 'inline', marginRight: '2px', marginLeft: '8px' }}>
+      <Box sx={{ mt: 6, textAlign: 'left' }}>
+        <Typography variant="subtitle1" sx={{ display: 'inline', mr: 1 }}>
           Belum memiliki akun?
         </Typography>
         <Typography
           variant="subtitle1"
-          color="primary"
           sx={{
             display: 'inline',
             fontWeight: 'bold',
             cursor: 'pointer',
             textDecoration: 'underline',
-            ml: 1,
             color: '#51B57D',
           }}
           onClick={() => navigate('/register')}
         >
           Daftar
         </Typography>
-      </div>
+      </Box>
+    </Box>
+  </Box>
 
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={2000}
-        onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert onClose={() => setOpenSnackbar(false)} severity="error" sx={{ width: '80%', borderRadius: '20px' }}>
-          {errorMessage}
-        </Alert>
-      </Snackbar>
+  {/* Snackbar */}
+  <Snackbar
+    open={openSnackbar}
+    autoHideDuration={2000}
+    onClose={() => setOpenSnackbar(false)}
+    anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+  >
+    <Alert onClose={() => setOpenSnackbar(false)} severity="error" sx={{ width: '80%', borderRadius: '20px' }}>
+      {errorMessage}
+    </Alert>
+  </Snackbar>
 
-      {/* Background Bottom */}
+{/* Background Bottom */}
       <Box
         component="img"
         src={bgBottom}
         alt="Background Bottom"
         sx={{
           width: '100%',
+          height: 'auto',
           position: 'absolute',
           bottom: 0,
           left: 0,
@@ -184,7 +196,8 @@ function Login({ setUser }) {
           pointerEvents: 'none',
         }}
       />
-    </MobileContainer>
+</MobileContainer>
+
   );
 }
 

@@ -45,6 +45,26 @@ const AdminHistoryContent = () => {
       return `${activity.replace('telah ditolak', `dari ${username} telah ditolak`)}`;
     }
 
+    if (activity.includes('sensor abnormal')) {
+      const matchSuhu = activity.match(/suhu (\d+(\.\d+)?)C/i);
+      const matchKelembapan = activity.match(/kelembapan (\d+(\.\d+)?)%/i);
+      const matchSuara = activity.match(/suara/i);
+
+      if (matchSuhu) {
+        const suhu = matchSuhu[1];
+        return `Terdeteksi suhu abnormal ${suhu}°C di kamar ${no_room} ${username}`;
+      }
+      if (matchKelembapan) {
+        const kelembapan = matchKelembapan[1];
+        return `Tingkat kelembapan tidak normal: ${kelembapan}% di kamar ${username}`;
+      }
+      if (matchSuara) {
+      return `Terdeteksi kebisingan tidak wajar di kamar ${username}`;
+      }
+
+      return 'Terdeteksi nilai sensor abnormal di kamarmu';
+    }
+
     return activity;
   };
 

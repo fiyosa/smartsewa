@@ -38,10 +38,12 @@ const CustomLegend = () => (
 );
 
 const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
+  if (active && payload && payload.length && label) {
     const now = new Date();
     const todayStr = now.toLocaleDateString('id-ID', {
-      day: '2-digit', month: 'long', year: 'numeric'
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
     });
 
     const [hour, minute] = label.split(':');
@@ -50,7 +52,9 @@ const CustomTooltip = ({ active, payload, label }) => {
     timeObj.setMinutes(parseInt(minute));
 
     const timeStr = timeObj.toLocaleTimeString('id-ID', {
-      hour: '2-digit', minute: '2-digit', hour12: false
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
     });
 
     const fullTimeStr = `${todayStr} ${timeStr}`;
@@ -60,8 +64,8 @@ const CustomTooltip = ({ active, payload, label }) => {
         <Typography variant="body2" fontWeight="bold">
           {fullTimeStr}
         </Typography>
-        <Typography variant="body2">Suhu: {payload[1].value} °C</Typography>
-        <Typography variant="body2">Kelembapan: {payload[0].value} %</Typography>
+        <Typography variant="body2">Suhu: {payload[1]?.value || '-'} °C</Typography>
+        <Typography variant="body2">Kelembapan: {payload[0]?.value || '-'} %</Typography>
       </Box>
     );
   }

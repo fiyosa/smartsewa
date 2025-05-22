@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
 import {
   Box, Button, TextField, MenuItem, Typography,
   IconButton, InputLabel, Select, FormControl,
   FormControlLabel, Checkbox, FormHelperText,
-  Snackbar, Alert, Portal
+  Snackbar, Alert
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import axios from 'axios';
 
-const metodeList = ["BCA","Dana","OVO","Gopay","Mandiri"];
+const metodeList = ["BCA", "Dana", "OVO", "Gopay", "Mandiri"];
 const monthOptions = [
-  "Januari","Februari","Maret","April","Mei","Juni",
-  "Juli","Agustus","September","Oktober","November","Desember"
+  "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+  "Juli", "Agustus", "September", "Oktober", "November", "Desember"
 ];
 const RATE_PER_MONTH = 500_000;
 
@@ -24,21 +23,15 @@ const ReportPayment = ({ onClose }) => {
   const [previewUrl, setPreviewUrl] = useState('');
   const [confirmChecked, setConfirmChecked] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'success'
-  });
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
-  // Load userId from localStorage
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem('user'));
     if (stored?.id) setUserId(stored.id);
   }, []);
 
-  // Create preview URL
   useEffect(() => {
-    if (!buktiBayar) { setPreviewUrl(''); return; }
+    if (!buktiBayar) return setPreviewUrl('');
     const url = URL.createObjectURL(buktiBayar);
     setPreviewUrl(url);
     return () => URL.revokeObjectURL(url);
@@ -62,11 +55,9 @@ const ReportPayment = ({ onClose }) => {
       formData.append('periodePembayaran', selectedMonths.join(', '));
       formData.append('buktiBayar', buktiBayar);
 
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/lapor-pembayaran`,
-        formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
-      );
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/lapor-pembayaran`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
 
       setSnackbar({ open: true, message: 'Laporan terkirim!', severity: 'success' });
     } catch (err) {
@@ -77,149 +68,161 @@ const ReportPayment = ({ onClose }) => {
     }
   };
 
-  const handleSnackbarClose = (e, reason) => {
-    if (reason === 'clickaway') return;
-    setSnackbar(s => ({ ...s, open: false }));
+  const handleSnackbarClose = () => {
+    setSnackbar(prev => ({ ...prev, open: false }));
     if (snackbar.severity === 'success') onClose?.();
   };
 
   return (
-    <>
-      <Box sx={{
-        maxWidth: 400,
-        mx: 'auto', my: 4, p: 3,
-        // bgcolor: '#fff',
-        borderRadius: '24px',
-        boxShadow: 1,
-        position: 'relative',
-        zIndex: 10
-      }}>
-        <IconButton
-          size="small"
-          sx={{ position: 'absolute', top: 8, right: 8 }}
-          color="error"
-          onClick={onClose}
-        >
-          <CloseIcon />
+    <Box
+      maxWidth={414}
+      mx="auto"
+      height="100vh"
+      display="flex"
+      flexDirection="column"
+      overflow="hidden"
+    >
+      {/* Sticky Header */}
+      <Box
+        sx={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+          px: 2,
+          pt: 6,
+          pb: 1,
+          borderBottom: '1px solid #eee',
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
+        <IconButton size="small" onClick={onClose}>
+          <ArrowBackIosNewIcon fontSize="small" />
         </IconButton>
-
-        <Typography variant="h6" gutterBottom>
-          Form Laporan Pembayaran
+        <Typography variant="h6" fontWeight="bold" ml={1}>
+          Lapor Pembayaran
         </Typography>
-
-        <form onSubmit={handleSubmit}>
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Metode Pembayaran</InputLabel>
-            <Select
-              required
-              label="Metode Pembayaran"
-              value={jenisPembayaran}
-              onChange={e => setJenisPembayaran(e.target.value)}
-              sx={{ borderRadius: 5 }}
-            >
-              {metodeList.map(m => <MenuItem key={m} value={m}>{m}</MenuItem>)}
-            </Select>
-          </FormControl>
-
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Periode Pembayaran</InputLabel>
-            <Select
-              multiple
-              label="Periode Pembayaran"
-              value={selectedMonths}
-              onChange={e => setSelectedMonths(e.target.value)}
-              renderValue={vals => vals.join(', ')}
-              sx={{ borderRadius: 5 }}
-            >
-              {monthOptions.map(m => <MenuItem key={m} value={m}>{m}</MenuItem>)}
-            </Select>
-            <FormHelperText>Pilih satu atau beberapa bulan</FormHelperText>
-          </FormControl>
-
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Jumlah Bayar (Rp)"
-            value={`Rp ${jumlahFormatted}`}
-            InputProps={{ readOnly: true }}
-            sx={{ '& .MuiInputBase-root': { borderRadius: 5 } }}
-          />
-
-          <Box mt={2} textAlign="center">
-            <input
-              id="upload-bayar-input"
-              type="file"
-              accept="image/*"
-              style={{ display: 'none' }}
-              onChange={e => setBuktiBayar(e.target.files[0])}
-            />
-            <label htmlFor="upload-bayar-input">
-              <Button variant="outlined" component="span" sx={{ borderRadius: 3 }}>
-                {buktiBayar ? 'Ganti Bukti Bayar' : 'Upload Bukti Bayar'}
-              </Button>
-            </label>
-            {previewUrl && (
-              <Box
-                component="img"
-                src={previewUrl}
-                alt="Preview"
-                sx={{
-                  mt: 2,
-                  width: '100%',
-                  maxWidth: 200,
-                  maxHeight: 500,
-                  objectFit: 'contain',
-                  borderRadius: 5,
-                  boxShadow: 1,
-                  mx: 'auto'
-                }}
-              />
-            )}
-          </Box>
-
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={confirmChecked}
-                onChange={e => setConfirmChecked(e.target.checked)}
-              />
-            }
-            label="Saya yakin data yang saya masukkan sudah benar"
-            sx={{ mt: 2 }}
-          />
-
-          <Button
-            type="submit"
-            disabled={!jenisPembayaran || !selectedMonths.length || !buktiBayar || !confirmChecked || loading}
-            fullWidth
-            variant="contained"
-            color="primary"
-            sx={{ mt: 3, borderRadius: 5 }}
-          >
-            {loading ? 'Mengirim...' : 'Kirim Laporan'}
-          </Button>
-        </form>
       </Box>
 
-      {/* Portal Snackbar ke body agar tidak ter-clip */}
-      {ReactDOM.createPortal(
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={1500}
-          onClose={handleSnackbarClose}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        >
-          <Alert
-            severity={snackbar.severity}
-            onClose={handleSnackbarClose}
-            sx={{ width: '100%', borderRadius: 5 }}
+      {/* Scrollable Content */}
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          flex: 1,
+          overflowY: 'auto',
+          px: 3,
+          py: 2,
+          paddingBottom: '50%',
+        }}
+      >
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Metode Pembayaran</InputLabel>
+          <Select
+            required
+            label="Metode Pembayaran"
+            value={jenisPembayaran}
+            onChange={e => setJenisPembayaran(e.target.value)}
+            sx={{ borderRadius: 5 }}
           >
-            {snackbar.message}
-          </Alert>
-        </Snackbar>,
-        document.body
-      )}
-    </>
+            {metodeList.map(m => (
+              <MenuItem key={m} value={m}>{m}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Periode Pembayaran</InputLabel>
+          <Select
+            multiple
+            label="Periode Pembayaran"
+            value={selectedMonths}
+            onChange={e => setSelectedMonths(e.target.value)}
+            renderValue={vals => vals.join(', ')}
+            sx={{ borderRadius: 5 }}
+          >
+            {monthOptions.map(m => (
+              <MenuItem key={m} value={m}>{m}</MenuItem>
+            ))}
+          </Select>
+          <FormHelperText>Pilih satu atau beberapa bulan</FormHelperText>
+        </FormControl>
+
+        <TextField
+          fullWidth
+          margin="normal"
+          label="Jumlah Bayar (Rp)"
+          value={`Rp ${jumlahFormatted}`}
+          InputProps={{ readOnly: true }}
+          sx={{ '& .MuiInputBase-root': { borderRadius: 5 } }}
+        />
+
+        <Box mt={2} textAlign="center">
+          <input
+            id="upload-bayar-input"
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={e => setBuktiBayar(e.target.files[0])}
+          />
+          <label htmlFor="upload-bayar-input">
+            <Button variant="outlined" component="span" sx={{ borderRadius: 3 }}>
+              {buktiBayar ? 'Ganti Bukti Bayar' : 'Upload Bukti Bayar'}
+            </Button>
+          </label>
+          {previewUrl && (
+            <Box
+              component="img"
+              src={previewUrl}
+              alt="Preview"
+              sx={{
+                mt: 2,
+                width: '100%',
+                maxWidth: 240,
+                maxHeight: 600,
+                objectFit: 'contain',
+                borderRadius: 5,
+                boxShadow: 1,
+                mx: 'auto'
+              }}
+            />
+          )}
+        </Box>
+
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={confirmChecked}
+              onChange={e => setConfirmChecked(e.target.checked)}
+            />
+          }
+          label="Saya yakin data yang saya masukkan sudah benar"
+          sx={{ mt: 2 }}
+        />
+
+        <Button
+          type="submit"
+          disabled={!jenisPembayaran || !selectedMonths.length || !buktiBayar || !confirmChecked || loading}
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, borderRadius: 5 }}
+        >
+          {loading ? 'Mengirim...' : 'Kirim Laporan'}
+        </Button>
+      </Box>
+
+      {/* Snackbar Feedback */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={1800}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert severity={snackbar.severity} onClose={handleSnackbarClose} sx={{ borderRadius: 2 }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 };
 

@@ -11,12 +11,13 @@ function HomeContent({ onOpenLaporan, onOpenDataPenghuni, onOpenMonitoring }) {
   return (
     <Box
       sx={{
-        height: 'calc(100vh - 230px)',
+        height: 'calc(110vh - 230px)',
         overflowY: 'auto', // ✅ biarkan scroll secara vertikal
         position: 'relative',
         zIndex: 1,
         px: 2, 
-        pb: 2, 
+        pt: 2,
+        // pb: 1, 
       }}
     >
       <Box

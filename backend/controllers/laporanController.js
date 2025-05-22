@@ -77,6 +77,25 @@ exports.konfirmasiLaporan = async (req, res) => {
     let activity = '';
     if (status === 'confirmed') {
       activity = 'Laporan pembayaran telah dikonfirmasi';
+
+      const user = await db.User.findByPk(laporan.userId);
+      if (user) {
+        const periods = laporan.periodePembayaran.split(',').map(p => p.trim());
+        const monthsToAdd = periods.length;
+
+        const now = new Date();
+        const currentExpiry = user.active_until ? new Date(user.active_until) : now;
+        const baseDate = currentExpiry > now ? currentExpiry : now;
+
+        const newExpiry = new Date(baseDate);
+        newExpiry.setMonth(baseDate.getMonth() + monthsToAdd);
+
+        user.active_until = newExpiry;
+        await user.save();
+
+        await saveHistory(`Masa aktif listrik diperpanjang hingga ${newExpiry.toLocaleDateString('id-ID')}`, user.id, laporan.id);
+      }
+
     } else if (status === 'rejected') {
       activity = `Laporan pembayaran telah ditolak${komentar ? `: ${komentar}` : ''}`;
     }

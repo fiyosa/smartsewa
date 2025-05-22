@@ -11,10 +11,9 @@ import CommonBackground from '../../components/common/CommonBackground';
 import CommonBottomNavigation from '../../components/common/CommonBottomNavigation';
 import HistoryIcon from '@mui/icons-material/History';
 
-// Assets
-import bgTop from '../../assets/Cloud.png'; // Updated path
-import bgBottom from '../../assets/Cloud3.png'; // Updated path
-import homeIcon from '../../assets/homeIcon.png'; // Updated path
+import bgTop from '../../assets/Cloud.png';
+import bgBottom from '../../assets/Cloud3.png';
+import homeIcon from '../../assets/homeIcon.png';
 import homeIconSelected from '../../assets/homeIconSelected.png';
 import profileIcon from '../../assets/profileIcon.png';
 import profileIconSelected from '../../assets/profileIconSelected.png';
@@ -24,9 +23,9 @@ function UserPages({ user, setUser }) {
   const [tab, setTab] = useState(0);
 
   const navigationTabs = [
-    { icon: <img src={tab === 0 ? homeIconSelected : homeIcon} width="20" /> },
-    { icon: <HistoryIcon />  },
-    { icon: <img src={tab === 2 ? profileIconSelected : profileIcon} width="20" /> }
+    { icon: <img src={tab === 0 ? homeIconSelected : homeIcon} width="20" alt="Home" /> },
+    { icon: <HistoryIcon /> },
+    { icon: <img src={tab === 2 ? profileIconSelected : profileIcon} width="20" alt="Profile" /> }
   ];
 
   const handleLogout = async () => {
@@ -36,53 +35,37 @@ function UserPages({ user, setUser }) {
     navigate('/');
   };
 
+  const renderContent = () => {
+    if (tab === 0) return <HomeContent />;
+    if (tab === 1) return <HistoryContent userId={user.id} />;
+    if (tab === 2) return <ProfileContent user={user} setUser={setUser} handleLogout={handleLogout} />;
+  };
+
   return (
     <MobileContainer>
-      <CommonBackground 
-        bgTop={bgTop} 
-        bgBottom={bgBottom} 
-        sx={{ 
-          position: 'fixed', // Tetap di tempatnya
-          top: 0,
-          left: 0,
-          zIndex: 0, // Di belakang elemen lain
-        }} 
-      />
+      <CommonBackground bgTop={bgTop} bgBottom={bgBottom} sx={{ position: 'fixed', top: 0, left: 0, zIndex: 0 }} />
 
-      {/* Greeting (Tetap di atas) */}
-      <CommonGreeting 
-        username={user.username} 
-        appName="Smartsewa" 
-        sx={{ 
-          position: 'fixed', // Tetap di atas
+      <CommonGreeting
+        username={user.username}
+        appName="Smartsewa"
+        sx={{
+          position: 'fixed',
           width: '100%',
-          zIndex: 2, // Di atas background
-          // backgroundColor: 'white', // Agar teks terlihat jelas
+          zIndex: 2,
           padding: '16px',
-        }} 
+        }}
       />
 
-      
-      {/* Content Area */}
-      <Box sx={{
-        height: 'calc(100vh - 200px)',
-        // overflowY: 'scroll',
-         paddingTop: '150px',
-        paddingBottom: '56px',
-        position: 'relative', 
-        top: 0,
-        left: 0,
-        width: '100%',
-        zIndex: 0, // Pastikan lebih kecil dari elemen lain
-        // scrollbarWidth: 'none', // Untuk Firefox
-        // '&::-webkit-scrollbar': {
-        //   display: 'none' // Untuk Chrome, Safari, Edge
-        // }
-      }}>
-
-        {tab === 0 && <HomeContent />}
-        {tab === 1 && <HistoryContent userId={user.id} />}
-        {tab === 2 && <ProfileContent user={user} setUser={setUser} handleLogout={handleLogout} />}
+      <Box
+        sx={{
+          height: 'calc(100vh - 200px)',
+          pt: '80px',
+          // pb: '56px',
+          position: 'relative',
+          zIndex: 1,
+        }}
+      >
+        {renderContent()}
       </Box>
 
       <CommonBottomNavigation
