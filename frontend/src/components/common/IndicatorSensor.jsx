@@ -20,7 +20,7 @@ function IndicatorSensor({ temperature, humidity, color = '#FFFFFF', minTemp = 2
       sx={{
         width: '100%',
         maxWidth: 347,
-        marginLeft: '10px',
+        marginLeft: '35px',
         //marginRight: 'auto',
         marginTop: '100px',
         display: 'flex',

@@ -62,7 +62,6 @@ const AdminUserPaymentHistoryDetail = ({ paymentId, onBack }) => {
           top: 0,
           zIndex: 10,
           borderBottom: '1px solid #eee',
-          backgroundColor: '#fff',
         }}
       >
         <IconButton size="small" onClick={onBack}>

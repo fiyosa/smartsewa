@@ -6,7 +6,7 @@ import buttonImage2 from '../../assets/ButtonLaporanPenghuni.png';
 import buttonImage3 from '../../assets/ButtonDataPenghuni.png';
 import buttonImage4 from '../../assets/ButtonMonitoringSensor.png';
 
-function HomeContent({ onOpenLaporan, onOpenDataPenghuni, onOpenMonitoring }) {
+function HomeContent({ onOpenLaporan, onOpenDataPenghuni, onOpenMonitoring, onOpenChatRoom }) {
   // Fungsi untuk menangani klik pada tombol laporan pembayaran 
   return (
     <Box
@@ -41,7 +41,7 @@ function HomeContent({ onOpenLaporan, onOpenDataPenghuni, onOpenMonitoring }) {
           src={buttonImage2}
           alt="Laporan Penghuni"
           sx={buttonStyle}
-          onClick={() => alert('Gambar 2 diklik!')}
+          onClick={() => onOpenChatRoom()}
         />
         <Box
           component="img"

@@ -17,11 +17,15 @@ import homeIcon from '../../assets/homeIcon.png';
 import homeIconSelected from '../../assets/homeIconSelected.png';
 import profileIcon from '../../assets/profileIcon.png';
 import profileIconSelected from '../../assets/profileIconSelected.png';
+import UserChatContent from '../../components/user/UserChatContent';
 
 function UserPages({ user, setUser }) {
   const navigate = useNavigate();
   const [tab, setTab] = useState(0);
-
+  const [activePage, setActivePage] = useState('home');
+  const hideBottomNavPages = ['chat']; 
+  const showBottomNav = !hideBottomNavPages.includes(activePage);
+  
   const navigationTabs = [
     { icon: <img src={tab === 0 ? homeIconSelected : homeIcon} width="20" alt="Home" /> },
     { icon: <HistoryIcon /> },
@@ -36,10 +40,15 @@ function UserPages({ user, setUser }) {
   };
 
   const renderContent = () => {
-    if (tab === 0) return <HomeContent />;
+    if (activePage === 'chat') {
+      return <UserChatContent onBack={() => setActivePage('home')} />;
+    }
+    if (tab === 0 && activePage === 'home') {
+      return <HomeContent user={user} onOpenChat={() => setActivePage('chat')} />;
+    }
     if (tab === 1) return <HistoryContent userId={user.id} />;
     if (tab === 2) return <ProfileContent user={user} setUser={setUser} handleLogout={handleLogout} />;
-  };
+};
 
   return (
     <MobileContainer>
@@ -68,12 +77,17 @@ function UserPages({ user, setUser }) {
         {renderContent()}
       </Box>
 
-      <CommonBottomNavigation
-        value={tab}
-        onChange={(_, newValue) => setTab(newValue)}
-        tabs={navigationTabs}
-        selectedColor="#5EC38B"
-      />
+      {showBottomNav && (
+        <CommonBottomNavigation
+          value={tab}
+          onChange={(_, newValue) => {
+            setTab(newValue);
+            setActivePage('home');
+          }}
+          tabs={navigationTabs}
+          selectedColor="#5EC38B"
+        />
+      )}
     </MobileContainer>
   );
 }

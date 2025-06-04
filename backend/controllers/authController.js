@@ -19,6 +19,8 @@ exports.register = async (req, res) => {
       no_room: null
     });
 
+    await db.ChatRoom.create({ userId: newUser.id });
+
     res.json({
       message: 'User berhasil didaftarkan',
       user: {

@@ -6,7 +6,7 @@ import buttonImage1 from '../../assets/ButtonPembayaran.png';
 import buttonImage2 from '../../assets/ButtonPengaduan.png';
 import ReportPayment from './ReportPayment';
 
-function UserHomeContent() {
+function UserHomeContent({ onOpenChat, user }) {
   const [temperature, setTemperature] = useState(null);
   const [humidity, setHumidity] = useState(null);
   const [showReportPayment, setShowReportPayment] = useState(false);
@@ -60,10 +60,10 @@ useEffect(() => {
           overflowX: 'hidden',
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center',
+          alignImtems: 'center', 
           gap: 3,
           scrollbarWidth: 'none',
-          msOverflowStyle: 'none',
+          msOverflowStyle: 'none', 
           '&::-webkit-scrollbar': {
             display: 'none',
           },
@@ -83,7 +83,7 @@ useEffect(() => {
             <Box
               component="img"
               src={buttonImage1}
-              alt="Button 1"
+              alt="Lapor Pembayaran"
               sx={{
                 width: { xs: '100%', sm: '347px' },
                 maxWidth: '347px',
@@ -101,7 +101,7 @@ useEffect(() => {
             <Box
               component="img"
               src={buttonImage2}
-              alt="Button 2"
+              alt="Chat Admin"
               sx={{
                 width: { xs: '100%', sm: '347px' },
                 maxWidth: '347px',
@@ -113,7 +113,7 @@ useEffect(() => {
                   transform: 'scale(1.05)',
                 },
               }}
-              onClick={() => alert('Gambar 2 diklik!')}
+              onClick={onOpenChat}
             />
           </Box>
         )}

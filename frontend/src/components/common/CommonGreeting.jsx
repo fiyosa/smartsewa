@@ -14,7 +14,7 @@
         <Typography variant="h5" fontWeight="bold" textAlign="left" sx={{ mt: 5, marginLeft: '5px' }}>
             Hi {username}
         </Typography>
-        <Typography variant="subtitle2" sx={{ mt: '5px', textAlign: 'left', marginLeft: '5px', mb: '20px' }}>
+        <Typography variant="subtitle2" sx={{ mt: '5px', textAlign: 'left', marginLeft: '5px', mb: '2px' }}>
             Selamat datang di <b>{appName}</b>
         </Typography>
         </Box>

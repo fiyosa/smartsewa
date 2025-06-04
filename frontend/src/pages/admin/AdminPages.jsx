@@ -18,8 +18,8 @@ import AdminUserDetail from '../../components/admin/AdminUserDetail';
 import MonitoringSensor from '../../components/admin/MonitoringSensor';
 import AdminUserPaymentHistory from '../../components/admin/AdminUserPaymentHistory';
 import AdminUserPaymentHistoryDetail from '../../components/admin/AdminUserPaymentHistoryDetail';
-
-
+import AdminChatRoomList from '../../components/admin/AdminChatRoomList';
+import AdminChatRoomDetail from '../../components/admin/AdminChatRoomDetail';
 import HistoryIcon from '@mui/icons-material/History';
 import bgTop from '../../assets/Cloud.png';
 import bgBottom from '../../assets/Cloud3.png';
@@ -35,6 +35,10 @@ function AdminPages({ user, setUser }) {
   const [selectedReportId, setSelectedReportId] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null); 
   const [selectedPaymentId, setSelectedPaymentId] = useState(null);
+  const [selectedChatRoomId, setSelectedChatRoomId] = useState(null);
+  const hideBottomNavPages = ['chatRoomDetail']; 
+  const showBottomNav = !hideBottomNavPages.includes(activePage);
+
 
   const navigationTabs = [
     { icon: <img src={tab === 0 ? homeIconSelected : homeIcon} width="20" /> },
@@ -123,7 +127,27 @@ function AdminPages({ user, setUser }) {
         />
       );
     }
-    
+    if (activePage === 'chatRoomList') {
+      return (
+        <AdminChatRoomList
+          onBack={() => setActivePage('home')}
+          onSelectRoom={(roomId) => {
+            setSelectedChatRoomId(roomId);
+            setActivePage('chatRoomDetail');
+          }}
+        />
+      );
+    }
+
+    if (activePage === 'chatRoomDetail') {
+      return (
+        <AdminChatRoomDetail
+          roomId={selectedChatRoomId}
+          onBack={() => setActivePage('chatRoomList')}
+        />
+      );
+    }
+
 
     if (tab === 0) {
       return (
@@ -135,7 +159,7 @@ function AdminPages({ user, setUser }) {
             setSelectedUserId(id);
             setActivePage('userPaymentHistory');
           }}
-
+          onOpenChatRoom={() => setActivePage('chatRoomList')}
         />
       );
     }
@@ -174,15 +198,18 @@ function AdminPages({ user, setUser }) {
       >
         {renderContent()}
       </Box>
-      <CommonBottomNavigation
-        value={tab}
-        onChange={(_, newValue) => {
-          setTab(newValue);
-          setActivePage('home');
-        }}
-        tabs={navigationTabs}
-        selectedColor="#5EC38B"
-      />
+
+      {showBottomNav && (
+        <CommonBottomNavigation
+          value={tab}
+          onChange={(_, newValue) => {
+            setTab(newValue);
+            setActivePage('home');
+          }}
+          tabs={navigationTabs}
+          selectedColor="#5EC38B"
+        />
+      )}
     </MobileContainer>
   );
 }

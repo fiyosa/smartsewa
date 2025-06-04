@@ -18,6 +18,7 @@
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.1",
     "framer-motion": "^12.7.4",
+    "pusher-js": "^8.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.2.0",

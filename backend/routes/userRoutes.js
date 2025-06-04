@@ -6,5 +6,6 @@ router.get('/users/with-room', userController.getUsersWithRoom);
 router.get('/users/:id', userController.getUserById);             
 router.get('/users', userController.getAllUsers);
 router.put('/users/:id', userController.updateUserRoom);
+router.put('/profile', userController.updateProfile); 
 
 module.exports = router;
