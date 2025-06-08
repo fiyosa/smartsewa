@@ -239,14 +239,14 @@ function ProfileContent({ user, setUser, handleLogout }) {
     </Box>
   </Box>
 
-  {/* Notifikasi */}
-  <Snackbar open={!!successMessage} autoHideDuration={2000} onClose={() => setSuccessMessage('')}>
-    <Alert severity="success" sx={{ borderRadius: 2 }}>{successMessage}</Alert>
-  </Snackbar>
-  <Snackbar open={!!errorMessage} autoHideDuration={3000} onClose={() => setErrorMessage('')}>
-    <Alert severity="error" sx={{ borderRadius: 2 }}>{errorMessage}</Alert>
-  </Snackbar>
-</Box>
+    {/* Notifikasi */}
+    <Snackbar open={!!successMessage} autoHideDuration={2000} onClose={() => setSuccessMessage('')}>
+      <Alert severity="success" sx={{ borderRadius: 2 }}>{successMessage}</Alert>
+    </Snackbar>
+    <Snackbar open={!!errorMessage} autoHideDuration={3000} onClose={() => setErrorMessage('')}>
+      <Alert severity="error" sx={{ borderRadius: 2 }}>{errorMessage}</Alert>
+    </Snackbar>
+  </Box>
 
       );
     }

@@ -128,8 +128,9 @@ export default function SensorChart({ data = [] }) {
           />
         </AreaChart>
       </ResponsiveContainer>
-
-      {/* Legend di luar chart */}
+      <Typography variant="subtitle2" fontWeight="bold" >
+      {data.length > 0 ? '' : '(Tidak ada data)'}
+      </Typography>
       <CustomLegend />
     </Box>
   );

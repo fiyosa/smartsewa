@@ -6,47 +6,44 @@ import buttonImage1 from '../../assets/ButtonPembayaran.png';
 import buttonImage2 from '../../assets/ButtonPengaduan.png';
 import ReportPayment from './ReportPayment';
 
-function UserHomeContent({ onOpenChat, user }) {
+function UserHomeContent({ onOpenChat}) {
   const [temperature, setTemperature] = useState(null);
   const [humidity, setHumidity] = useState(null);
+  const [activeUntil, setActiveUntil] = useState(null);
   const [showReportPayment, setShowReportPayment] = useState(false);
   const navigate = useNavigate();
 
-  // Function to show the report payment form
-  const handleClickLaporPembayaran = () => {
-    setShowReportPayment(true);
-  };
+  const handleClickLaporPembayaran = () => setShowReportPayment(true);
+  const handleBackToHome = () => setShowReportPayment(false);
 
-  // Function to return to the main home view
-  const handleBackToHome = () => {
-    setShowReportPayment(false);
-  };
-
-  // Fetch temperature and humidity data
+  // Fetch sensor & user data
 useEffect(() => {
-  const fetchData = async () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (!user?.no_room) {
-      setTemperature(null);
-      setHumidity(null);
-      return;
-    }
+ const fetchAll = async () => {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (!storedUser?.no_room || !storedUser?.id) return;
 
-    try {
-      const res = await fetch(`http://localhost:5000/api/monitoring?kamar=${user.no_room}`);
-      const data = await res.json();
-      const latest = data.sensor?.[0];
-      setTemperature(latest?.suhu ?? null);
-      setHumidity(latest?.kelembapan ?? null);
-    } catch (error) {
-      console.error('Failed to fetch monitoring data:', error);
-      setTemperature(null);
-      setHumidity(null);
-    }
-  };
+      try {
+        // Fetch sensor
+        const resSensor = await fetch(`http://localhost:5000/api/monitoring?kamar=${storedUser.no_room}`);
+        const dataSensor = await resSensor.json();
+        const latest = dataSensor.sensor?.[0];
+        setTemperature(latest?.suhu ?? null);
+        setHumidity(latest?.kelembapan ?? null);
 
-  fetchData();
-  const interval = setInterval(fetchData, 60000); // Refresh per 1 menit
+        // Fetch user info terbaru
+        const resUser = await fetch(`http://localhost:5000/api/users/${storedUser.id}`);
+        const dataUser = await resUser.json();
+        setActiveUntil(dataUser.active_until);
+        localStorage.setItem('user', JSON.stringify({ ...storedUser, active_until: dataUser.active_until }));
+      } catch (error) {
+        console.error('Gagal fetch data:', error);
+        setTemperature(null);
+        setHumidity(null);
+      }
+    };
+
+  fetchAll();
+  const interval = setInterval(fetchAll, 60000); // Refresh per 1 menit
 
   return () => clearInterval(interval);
 }, []);
@@ -69,11 +66,11 @@ useEffect(() => {
           },
         }}
       >
-        {console.log('Temperature:', temperature, 'Humidity:', humidity)}
+        {console.log('Temperature:', temperature, 'Humidity:', humidity, 'Active Until:', activeUntil)}
 
-        {/* Hide IndicatorSensor when ReportPayment is shown */}
+        {/* Indikator sensor & Akses listrik */}
         {!showReportPayment && (
-          <IndicatorSensor temperature={temperature} humidity={humidity} />
+          <IndicatorSensor temperature={temperature} humidity={humidity} activeUntil={activeUntil}/>
         )}
 
         {showReportPayment ? (

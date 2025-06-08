@@ -7,12 +7,14 @@ import {
   ListItemText,
   Divider,
   CircularProgress,
+  MenuItem, Select, FormControl, InputLabel
 } from '@mui/material';
 import axios from 'axios';
 
 const AdminHistoryContent = () => {
   const [historyData, setHistoryData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('semua');
   const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
   useEffect(() => {
@@ -64,6 +66,13 @@ const AdminHistoryContent = () => {
 
       return 'Terdeteksi nilai sensor abnormal di kamarmu';
     }
+    if (activity.includes('Akses listrik')) {
+      if (activity.includes('7 hari')) return `Akses listrik akan habis dalam 7 hari — oleh ${username}`;
+      if (activity.includes('3 hari')) return `Akses listrik akan habis dalam 3 hari — oleh ${username}`;
+      if (activity.includes('besok')) return `Akses listrik akan habis besok — oleh ${username}`;
+      if (activity.includes('telah habis')) return `Akses listrik telah habis — oleh ${username}`;
+      return `Status akses listrik diperbarui — oleh ${username}`;
+    }
 
     return activity;
   };
@@ -94,6 +103,36 @@ const AdminHistoryContent = () => {
         Riwayat Aktivitas
       </Typography>
 
+      <Box sx={{ px: 2, pt: 1 }}>
+      <FormControl fullWidth size="small" sx={{ mb: 1 }}>
+        <InputLabel id="filter-label">Filter</InputLabel>
+        <Select
+          labelId="filter-label"
+          value={filter}
+          label="Filter"
+          onChange={(e) => setFilter(e.target.value)}
+          sx={{
+            borderRadius: 2,
+            fontSize: 13,
+            height: 40,
+          }}
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                maxHeight: 200,
+                fontSize: 13,
+              },
+            },
+          }}
+        >
+          <MenuItem value="semua">Semua</MenuItem>
+          <MenuItem value="listrik">Akses Listrik</MenuItem>
+          <MenuItem value="pembayaran">Pembayaran</MenuItem>
+          <MenuItem value="sensor">Sensor</MenuItem>
+        </Select>
+      </FormControl>
+      </Box>
+
       <Box
         sx={{
           flex: 1,
@@ -120,7 +159,19 @@ const AdminHistoryContent = () => {
           </Typography>
         ) : (
           <List>
-            {historyData.map((item, index) => {
+            {historyData
+              .filter(item => {
+                if (filter === 'semua') return true;
+                if (filter === 'listrik') return item.activity.toLowerCase().includes('akses listrik');
+                if (filter === 'pembayaran') {
+                  return ['dikirim', 'dikonfirmasi', 'ditolak'].some(k => item.activity.includes(k));
+                }
+                if (filter === 'sensor') {
+                  return ['Sensor', 'abnormal'].some(k => item.activity.includes(k));
+                }
+                return true;
+              })
+              .map((item, index) => {
               const username = item.User?.username || 'Pengguna';
               const activity = formatActivity(item.activity, username);
               const date = new Date(item.createdAt).toLocaleDateString('id-ID');

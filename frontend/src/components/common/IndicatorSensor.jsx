@@ -1,20 +1,28 @@
 import React from 'react';
 import { Typography, Grid, Box } from '@mui/material';
-import ThermostatIcon from '@mui/icons-material/Thermostat'; // Ikon suhu
-import OpacityIcon from '@mui/icons-material/Opacity'; // Ikon kelembaban
-import BoltIcon from '@mui/icons-material/Bolt'; // Ikon listrik
+import ThermostatIcon from '@mui/icons-material/Thermostat'; 
+import OpacityIcon from '@mui/icons-material/Opacity'; 
+import BoltIcon from '@mui/icons-material/Bolt'; 
+import dayjs from 'dayjs';
 
-function IndicatorSensor({ temperature, humidity, color = '#FFFFFF', minTemp = 20, maxTemp = 30, minHum = 30, maxHum = 75 }) {
+function IndicatorSensor({ temperature, humidity, activeUntil, color = '#FFFFFF', minTemp = 20, maxTemp = 30, minHum = 30, maxHum = 75 }) {
   const displayTemperature = temperature !== null ? `${temperature}°C` : 'N/A';
   const displayHumidity = humidity !== null ? `${humidity}%` : 'N/A';
 
-  // Cek apakah suhu di luar range
   const isTemperatureOutOfRange = temperature !== null && (temperature < minTemp || temperature > maxTemp);
   const isHumidityOfRange = humidity !== null && (humidity < minHum || temperature > maxHum);
 
-  // const textColor = isTemperatureOutOfRange ? '#FF495C' : color; // Merah jika suhu di luar range
-  const backgroundColor = isTemperatureOutOfRange ? '#FF495C' : '#5EC38B'; // Merah jika suhu di luar range
+  const backgroundColor = isTemperatureOutOfRange ? '#FF495C' : '#5EC38B'; 
+  let sisaHari = 0;
+  let sisaJam = 0;
 
+  if (activeUntil) {
+    const now = dayjs();
+    const until = dayjs(activeUntil);
+    const durasi = until.diff(now, 'minute');
+    sisaHari = Math.floor(durasi / 1440); // 1 hari = 1440 menit
+    sisaJam = Math.floor((durasi % 1440) / 60);
+  }
   return (
     <Box
       sx={{
@@ -68,10 +76,10 @@ function IndicatorSensor({ temperature, humidity, color = '#FFFFFF', minTemp = 2
               }}
             >
               <BoltIcon sx={{ color: '#FFFFFF', fontSize: '100px' }} />
-              <Typography variant="subtitle2" sx={{ color: '#FFFFFF', textAlign: 'center', fontSize: '0.9rem' }}>
-                Sisa Waktu <br />
-                3 Jam 15 Menit
-              </Typography>
+                <Typography variant="subtitle2" sx={{ color: '#FFFFFF', textAlign: 'center', fontSize: '0.9rem' }}>
+                  Sisa Waktu <br />
+                  {activeUntil ? `${sisaHari} Hari ${sisaJam} Jam` : 'Tidak Aktif'}
+                </Typography>
             </Box>
           </Box>
         </Grid>

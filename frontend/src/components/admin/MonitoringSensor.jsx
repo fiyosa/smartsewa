@@ -120,17 +120,18 @@ export default function MonitoringSensor({ onBack }) {
               </MenuItem>
             ))}
           </TextField>
-
-          {/* Komponen Listrik */}
-          <PowerAccessDisplay />
-
-          {/* Grafik */}
-          <Paper elevation={2} sx={{ p: 2, borderRadius: 3 }}>
-            <Typography fontWeight="bold" mb={1}>
-              Grafik Suhu & Kelembaban
-            </Typography>
-            <SensorChart data={sensorData} />
-          </Paper>
+          {/* Komponen Listrik dan Grafik */}
+          {selectedUser && (
+            <>
+              <PowerAccessDisplay activeUntil={selectedUser.active_until} />
+              <Paper elevation={2} sx={{ p: 2, borderRadius: 3 }}>
+                <Typography fontWeight="bold" mb={1}>
+                  Grafik Suhu & Kelembaban
+                </Typography>
+                <SensorChart data={sensorData} />
+              </Paper>
+            </>
+          )}
         </Container>
       </Box>
     </Box>

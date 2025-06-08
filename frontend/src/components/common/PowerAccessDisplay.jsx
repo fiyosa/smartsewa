@@ -1,9 +1,28 @@
 import { Box, Typography, LinearProgress } from '@mui/material';
+import dayjs from 'dayjs';
 
-export default function PowerAccessDisplay() {
+export default function PowerAccessDisplay({ activeUntil }) {
   const maxHari = 30;
-  const sisaHari = 17;
-  const sisaJam = 50;
+
+  if (!activeUntil) {
+    return (
+      <Box sx={{ position: 'relative', mt: 2, mb: 4 }}>
+        <Typography variant="h6" fontWeight="bold" mb={1} mx={1}>
+          Akses Listrik
+        </Typography>
+        <Typography variant="body2" mx={1} color="text.secondary">
+          Belum ada akses listrik
+        </Typography>
+      </Box>
+    );
+  }
+
+  const now = dayjs();
+  const until = dayjs(activeUntil);
+  const durasi = until.diff(now, 'minute'); // total selisih dalam menit
+
+  const sisaHari = Math.floor(durasi / 1440); // 1 hari = 1440 menit
+  const sisaJam = Math.floor((durasi % 1440) / 60);
   const persen = ((sisaHari + sisaJam / 24) / maxHari) * 100;
 
   return (
