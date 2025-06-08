@@ -10,7 +10,11 @@
 body {
   margin: 0;
   background-color: #f8f9fa;
+
 }
+/* html {
+  scrollbar-gutter: stable;
+} */
 
 #root {
   max-width: 414px;
@@ -24,3 +28,15 @@ body {
   margin: 0;
   font-family: sans-serif;
 } */
+
+/* Hilangkan scrollbar di semua kontainer scrollable */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+/* Untuk WebKit (Chrome, Safari) */
+*::-webkit-scrollbar {
+  display: none;
+}
+

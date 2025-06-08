@@ -4,6 +4,7 @@ import ThermostatIcon from '@mui/icons-material/Thermostat';
 import OpacityIcon from '@mui/icons-material/Opacity'; 
 import BoltIcon from '@mui/icons-material/Bolt'; 
 import dayjs from 'dayjs';
+import DynamicBoltIcon from './DynamicBoltIcon'; 
 
 function IndicatorSensor({ temperature, humidity, activeUntil, color = '#FFFFFF', minTemp = 20, maxTemp = 30, minHum = 30, maxHum = 75 }) {
   const displayTemperature = temperature !== null ? `${temperature}°C` : 'N/A';
@@ -13,8 +14,11 @@ function IndicatorSensor({ temperature, humidity, activeUntil, color = '#FFFFFF'
   const isHumidityOfRange = humidity !== null && (humidity < minHum || temperature > maxHum);
 
   const backgroundColor = isTemperatureOutOfRange ? '#FF495C' : '#5EC38B'; 
+  
+  const maxHari = 30;
   let sisaHari = 0;
   let sisaJam = 0;
+  let level = 0;
 
   if (activeUntil) {
     const now = dayjs();
@@ -22,6 +26,8 @@ function IndicatorSensor({ temperature, humidity, activeUntil, color = '#FFFFFF'
     const durasi = until.diff(now, 'minute');
     sisaHari = Math.floor(durasi / 1440); // 1 hari = 1440 menit
     sisaJam = Math.floor((durasi % 1440) / 60);
+    level = Math.max(0, Math.min(1, (sisaHari + sisaJam / 24) / maxHari));
+
   }
   return (
     <Box
@@ -72,10 +78,12 @@ function IndicatorSensor({ temperature, humidity, activeUntil, color = '#FFFFFF'
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0px',
-                marginLeft: '-28px',
+                marginLeft: '-20px',
               }}
             >
-              <BoltIcon sx={{ color: '#FFFFFF', fontSize: '100px' }} />
+            <Box sx={{ position: 'relative', width: '100px', height: '100px' }}>
+              <DynamicBoltIcon level={level} />
+            </Box>
                 <Typography variant="subtitle2" sx={{ color: '#FFFFFF', textAlign: 'center', fontSize: '0.9rem' }}>
                   Sisa Waktu <br />
                   {activeUntil ? `${sisaHari} Hari ${sisaJam} Jam` : 'Tidak Aktif'}
