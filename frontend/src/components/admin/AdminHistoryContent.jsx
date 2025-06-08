@@ -112,7 +112,7 @@ const AdminHistoryContent = () => {
           label="Filter"
           onChange={(e) => setFilter(e.target.value)}
           sx={{
-            borderRadius: 2,
+            borderRadius: 4,
             fontSize: 13,
             height: 40,
           }}

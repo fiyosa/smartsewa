@@ -40,3 +40,12 @@ body {
   display: none;
 }
 
+/* Hapus native eye icon di Edge dan Safari */
+input::-ms-reveal,
+input::-ms-clear,
+input::-webkit-clear-button,
+input::-webkit-inner-spin-button {
+  display: none;
+}
+
+

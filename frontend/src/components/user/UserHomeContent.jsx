@@ -1,52 +1,89 @@
 import React, { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, Snackbar, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import IndicatorSensor from '../../components/common/IndicatorSensor';
 import buttonImage1 from '../../assets/ButtonPembayaran.png';
 import buttonImage2 from '../../assets/ButtonPengaduan.png';
 import ReportPayment from './ReportPayment';
+import axios from 'axios';
 
 function UserHomeContent({ onOpenChat}) {
   const [temperature, setTemperature] = useState(null);
   const [humidity, setHumidity] = useState(null);
   const [activeUntil, setActiveUntil] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [showReportPayment, setShowReportPayment] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
+
   const navigate = useNavigate();
 
-  const handleClickLaporPembayaran = () => setShowReportPayment(true);
+  const handleClickLaporPembayaran = () =>{
+    if (!userData?.no_room){
+      setSnackbar({
+            open: true,
+            message: 'Anda belum memiliki nomor kamar. Silakan hubungi admin.',
+            severity: 'warning',
+      });
+      return;
+    }
+    setShowReportPayment(true);
+  };
+
   const handleBackToHome = () => setShowReportPayment(false);
 
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
   // Fetch sensor & user data
-useEffect(() => {
- const fetchAll = async () => {
+  useEffect(() => {
+  const fetchAll = async () => {
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        if (!storedUser?.no_room || !storedUser?.id) return;
+
+        try {
+          // Fetch sensor
+          const resSensor = await fetch(`http://localhost:5000/api/monitoring?kamar=${storedUser.no_room}`);
+          const dataSensor = await resSensor.json();
+          const latest = dataSensor.sensor?.[0];
+          setTemperature(latest?.suhu ?? null);
+          setHumidity(latest?.kelembapan ?? null);
+
+          // Fetch user info terbaru
+          const resUser = await fetch(`http://localhost:5000/api/users/${storedUser.id}`);
+          const dataUser = await resUser.json();
+          setActiveUntil(dataUser.active_until);
+          localStorage.setItem('user', JSON.stringify({ ...storedUser, active_until: dataUser.active_until }));
+        } catch (error) {
+          console.error('Gagal fetch data:', error);
+          setTemperature(null);
+          setHumidity(null);
+        }
+      };
+
+    fetchAll();
+    const interval = setInterval(fetchAll, 60000); // Refresh per 1 menit
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const fetchUpdatedUser = async () => {
       const storedUser = JSON.parse(localStorage.getItem('user'));
-      if (!storedUser?.no_room || !storedUser?.id) return;
+      if (!storedUser?.id) return;
 
       try {
-        // Fetch sensor
-        const resSensor = await fetch(`http://localhost:5000/api/monitoring?kamar=${storedUser.no_room}`);
-        const dataSensor = await resSensor.json();
-        const latest = dataSensor.sensor?.[0];
-        setTemperature(latest?.suhu ?? null);
-        setHumidity(latest?.kelembapan ?? null);
-
-        // Fetch user info terbaru
-        const resUser = await fetch(`http://localhost:5000/api/users/${storedUser.id}`);
-        const dataUser = await resUser.json();
-        setActiveUntil(dataUser.active_until);
-        localStorage.setItem('user', JSON.stringify({ ...storedUser, active_until: dataUser.active_until }));
-      } catch (error) {
-        console.error('Gagal fetch data:', error);
-        setTemperature(null);
-        setHumidity(null);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/${storedUser.id}`);
+        localStorage.setItem('user', JSON.stringify(res.data));
+        setUserData(res.data); // <== UPDATE STATE
+      } catch (err) {
+        console.error('Gagal memperbarui data user:', err);
       }
     };
 
-  fetchAll();
-  const interval = setInterval(fetchAll, 60000); // Refresh per 1 menit
+    fetchUpdatedUser();
+  }, []);
 
-  return () => clearInterval(interval);
-}, []);
+  if (!userData) return null;
 
   return (
     <Box sx={{ height: 'calc(110vh - 200px)', overflow: 'hidden' }}>
@@ -114,6 +151,17 @@ useEffect(() => {
             />
           </Box>
         )}
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+
       </Box>
     </Box>
   );

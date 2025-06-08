@@ -12,6 +12,44 @@ exports.register = async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
+    // Cek apakah user dengan email tersebut sudah pernah terdaftar (termasuk yang terhapus)
+    const existingUser = await db.User.findOne({
+      where: { email },
+      paranoid: false //  soft deleted
+    });
+
+    if (existingUser) {
+      if (existingUser.deletedAt) {
+        // Restore user lama dan reset datanya
+        await existingUser.restore();
+        await existingUser.update({
+          username,
+          password: hashedPassword,
+          no_room: null,
+          role: 'user'
+        });
+
+        //chat room 
+        const existingRoom = await db.ChatRoom.findOne({ where: { userId: existingUser.id } });
+        if (!existingRoom) {
+          await db.ChatRoom.create({ userId: existingUser.id });
+        }
+
+        return res.json({
+          message: 'Akun berhasil dipulihkan dan diperbarui',
+          user: {
+            id: existingUser.id,
+            username: existingUser.username,
+            email: existingUser.email,
+            role: existingUser.role,
+            no_room: existingUser.no_room,
+            createdAt: existingUser.createdAt
+          }
+        });
+      } else {
+        return res.status(400).json({ error: 'Email sudah digunakan' });
+      }
+    }
     const newUser = await db.User.create({
       username, email,
       password: hashedPassword,

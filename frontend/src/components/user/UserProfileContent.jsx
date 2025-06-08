@@ -8,6 +8,8 @@ import {
   TextField,
   Alert
 } from '@mui/material';
+import { useEffect } from 'react';
+
 import axios from 'axios';
 
 function ProfileContent({ user, setUser, handleLogout }) {
@@ -62,6 +64,23 @@ function ProfileContent({ user, setUser, handleLogout }) {
     setSuccessMessage('');
   };
   
+  useEffect(() => {
+    const fetchUser = async () => {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (!storedUser?.id) return;
+
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/${storedUser.id}`);
+        setUser(res.data);
+        localStorage.setItem('user', JSON.stringify(res.data));
+      } catch (err) {
+        console.error('Gagal mengambil data user:', err);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   return (
     <Box
   sx={{
