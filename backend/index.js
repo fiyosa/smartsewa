@@ -17,7 +17,8 @@ const createDefaultAdmin = require('./utils/createDefaultAdmin');
 require('dotenv').config();
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5173'],
+  // origin: ['http://localhost:3000', 'http://localhost:5173'],
+  origin: '*',
   credentials: true
 }));
 
@@ -35,6 +36,9 @@ app.use(session({
 }));
 
 // route
+app.get('/', (req, res) => {
+  res.json({ message: 'ok' });
+});
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Route API
 app.use('/api', authRoutes);
