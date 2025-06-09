@@ -11,7 +11,7 @@ function AdminChatRoomList({ onBack, onSelectRoom }) {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/chat/rooms', { withCredentials: true });
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/chat/rooms`, { withCredentials: true });
         setRooms(res.data);
       } catch (err) {
         console.error('Gagal ambil room:', err);

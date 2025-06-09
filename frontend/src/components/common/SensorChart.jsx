@@ -9,9 +9,9 @@ import {
 } from 'recharts';
 import { Box, Typography } from '@mui/material';
 
-// Custom legend pakai MUI
+
 const CustomLegend = () => (
-  <Box display="flex" justifyContent="center" gap={3} mt={2}>
+  <Box display="flex" justifyContent="center" gap={3} mt={1}>
     <Box display="flex" alignItems="center" gap={1}>
       <Box
         sx={{
@@ -82,8 +82,8 @@ export default function SensorChart({ data = [] }) {
 
   return (
     <Box>
-      <ResponsiveContainer width="100%" height={260}>
-        <AreaChart data={sortedData} margin={{ top: 20, right: 0, left: -30, bottom: 0 }}>
+      <ResponsiveContainer width="100%" height={280}>
+        <AreaChart data={sortedData} margin={{ top: 20, right: 0, left: -15, bottom: 10 }}>
           <defs>
             <linearGradient id="colorKelembaban" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#A4CA6F" stopOpacity={1} />
@@ -99,15 +99,17 @@ export default function SensorChart({ data = [] }) {
             dataKey="time"
             stroke="#000"
             tick={{ fill: '#000', fontSize: 11 }}
-            tickMargin={8}
-            minTickGap={15}
+            tickMargin={5}
+            minTickGap={10}
+            label={{ value: 'Waktu', position: 'insideBottom', offset: -5,  fontSize: 9, fill: '#000' }}
           />
 
           <YAxis
             stroke="#000"
             tick={{ fill: '#000', fontSize: 12 }}
             domain={[0, 80]}
-            tickMargin={8}
+            tickMargin={4}
+            label={{ value: 'Nilai Sensor', angle: -90, position: 'insideLeft', offset: 20, fontSize: 9, fill: '#000', dy: 25 }}
           />
 
           <CartesianGrid strokeDasharray="3 3" stroke="#e0e0e0" />

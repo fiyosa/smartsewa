@@ -42,14 +42,14 @@ function UserHomeContent({ onOpenChat}) {
 
         try {
           // Fetch sensor
-          const resSensor = await fetch(`http://localhost:5000/api/monitoring?kamar=${storedUser.no_room}`);
+          const resSensor = await fetch(`${import.meta.env.VITE_API_URL}/api/monitoring?kamar=${storedUser.no_room}`);
           const dataSensor = await resSensor.json();
           const latest = dataSensor.sensor?.[0];
           setTemperature(latest?.suhu ?? null);
           setHumidity(latest?.kelembapan ?? null);
 
           // Fetch user info terbaru
-          const resUser = await fetch(`http://localhost:5000/api/users/${storedUser.id}`);
+          const resUser = await fetch(`${import.meta.env.VITE_API_URL}/api/users/${storedUser.id}`);
           const dataUser = await resUser.json();
           setActiveUntil(dataUser.active_until);
           localStorage.setItem('user', JSON.stringify({ ...storedUser, active_until: dataUser.active_until }));

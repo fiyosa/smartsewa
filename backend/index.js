@@ -12,6 +12,7 @@ const historyRoutes = require('./routes/historyRoutes');
 const sensorRoutes = require('./routes/sensorRoutes');
 const relayRoutes = require('./routes/relayRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const createDefaultAdmin = require('./utils/createDefaultAdmin');
 
 require('dotenv').config();
 
@@ -47,7 +48,10 @@ app.use('/api/chat', chatRoutes);
 
 // Sinkronisasi database
 db.sequelize.sync()
-  .then(() => console.log("Database berhasil disinkronisasi."))
+  .then(async () => {
+    console.log("Database berhasil disinkronisasi.");
+    await createDefaultAdmin(); 
+  })
   .catch(err => console.error("Gagal sinkronisasi database: ", err));
 
 const PORT = process.env.PORT || 5000;

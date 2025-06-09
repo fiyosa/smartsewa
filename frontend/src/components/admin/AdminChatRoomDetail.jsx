@@ -44,7 +44,7 @@ function AdminChatRoomDetail({ roomId, onBack }) {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/chat/rooms/${roomId}/messages`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/chat/rooms/${roomId}/messages`, {
           withCredentials: true,
         });
         setMessages(res.data);
@@ -58,7 +58,7 @@ function AdminChatRoomDetail({ roomId, onBack }) {
 
     const fetchUsername = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/chat/rooms', {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/chat/rooms`, {
           withCredentials: true,
         });
         const room = res.data.find((r) => r.id === roomId);
@@ -100,7 +100,7 @@ function AdminChatRoomDetail({ roomId, onBack }) {
 
     try {
       await axios.post(
-        'http://localhost:5000/api/chat/message',
+        `${import.meta.env.VITE_API_URL}/api/chat/message`,
         { roomId, message: messageToSend },
         { withCredentials: true }
       );

@@ -45,7 +45,8 @@ exports.getAllChatRooms = async (req, res) => {
     const rooms = await db.ChatRoom.findAll({
       include: {
         model: db.User,
-        attributes: ['id', 'username', 'email', 'no_room']
+        attributes: ['id', 'username', 'email', 'no_room'],
+        required: true
       },
       order: [['createdAt', 'DESC']]
     });

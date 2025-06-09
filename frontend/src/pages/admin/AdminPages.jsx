@@ -47,7 +47,7 @@ function AdminPages({ user, setUser }) {
   ];
 
   const handleLogout = async () => {
-    await axios.post('http://localhost:5000/api/logout', {}, { withCredentials: true });
+    await axios.post(`${import.meta.env.VITE_API_URL}/api/logout`, {}, { withCredentials: true });
     localStorage.removeItem('user');
     setUser(null);
     navigate('/');
