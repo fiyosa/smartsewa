@@ -3,6 +3,13 @@ const sequelize = new Sequelize(
   process.env.DATABASE_URL || 'postgresql://postgres:@localhost:5432/smartsewa', 
   {
     dialect: 'postgres',
+    dialectModule: require('pg'),
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    },
     logging: false,
   }
 );
