@@ -16,13 +16,13 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const navigate = useNavigate()
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [alertMessage, setalertMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   
   const handleRegister = async () => {
     if (password !== confirmPassword) {
-      setErrorMessage('Password dan konfirmasi password tidak cocok.')
+      setalertMessage('Password dan konfirmasi password tidak cocok.')
       setOpenSnackbar(true)
       return
     }
@@ -32,14 +32,14 @@ function Register() {
         { username, email, password, role: 'user' },
         { headers: { 'Content-Type': 'application/json' } }
       );
-      setErrorMessage('Registrasi berhasil. Silakan login.');
+      setalertMessage('Registrasi berhasil. Silakan login.');
       setOpenSnackbar(true);
         setTimeout(() => {
         navigate('/');
       }, 1000);
     } catch (error) {
       console.error('Registration error', error.response ? error.response.data : error);
-      setErrorMessage('Registrasi gagal. Silakan periksa kembali data yang Anda masukkan.');
+      setalertMessage('Registrasi gagal. Silakan periksa kembali data yang Anda masukkan.');
       setOpenSnackbar(true); // Tampilkan snackbar
     }
   }
@@ -181,8 +181,8 @@ function Register() {
     onClose={() => setOpenSnackbar(false)}
     anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
   >
-    <Alert onClose={() => setOpenSnackbar(false)} severity="error" sx={{ width: '80%', borderRadius: '20px' }}>
-      {errorMessage}
+    <Alert onClose={() => setOpenSnackbar(false)} severity={alertMessage.includes('berhasil') ? 'success' : 'error'} sx={{ width: '80%', borderRadius: '20px' }}>
+      {alertMessage}
     </Alert>
   </Snackbar>
 

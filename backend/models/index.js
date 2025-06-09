@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes} = require('sequelize');
 const sequelize = new Sequelize(
-  process.env.DATABASE_URL || 'postgresql://postgres:yourpassword@localhost:5432/smartsewa', 
+  process.env.DATABASE_URL || 'postgresql://postgres:@localhost:5432/smartsewa', 
   {
     dialect: 'postgres',
     logging: false,
